@@ -119,7 +119,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.alibaba.otter.canal.admin.CanalAdminApplication</mainClass>
+                            <mainClass>com.alibaba.otter.canal.admin.ZHAdminApplication</mainClass>
                         </manifest>
                     </archive>
                     <excludes>
@@ -171,13 +171,24 @@
                                     <outputDirectory>src/main/resources/public</outputDirectory>
                                     <overwrite>true</overwrite>
                                     <resources>
-                                        <resource>
+                                        <!--<resource>
                                             <directory>${project.parent.basedir}/admin-ui/target/dist</directory>
                                             <includes>
                                                 <include>static/</include>
                                                 <include>index.html</include>
                                                 <include>avatar.gif</include>
                                                 <include>logo.png</include>
+                                            </includes>
+                                        </resource>-->
+                                        <resource>
+                                            <directory>${project.parent.basedir}/admin-ui2/dist</directory>
+                                            <includes>
+                                                <include>css/</include>
+                                                <include>fonts/</include>
+                                                <include>img/</include>
+                                                <include>js/</include>
+                                                <include>index.html</include>
+                                                <include>favicon.ico</include>
                                             </includes>
                                         </resource>
                                     </resources>

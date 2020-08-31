@@ -13,10 +13,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @EnableEncryptableProperties
-public class CanalAdminApplication {
+public class ZHAdminApplication {
 
     public static void main(String[] args) {
-        SpringApplication application = new SpringApplication(CanalAdminApplication.class);
+        SpringApplication application = new SpringApplication(ZHAdminApplication.class);
         application.setBannerMode(Banner.Mode.OFF);
         application.run(args);
     }

@@ -22,4 +22,7 @@ conf/
 admin-ui/dist/
 admin-ui/node/
 admin-ui/node_modules/
+admin-ui2/dist/
+admin-ui2/node/
+admin-ui2/node_modules/
 admin-web/src/main/resources/conf/
