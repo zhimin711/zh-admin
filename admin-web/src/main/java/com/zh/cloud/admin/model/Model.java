@@ -1,4 +1,4 @@
-package com.alibaba.otter.canal.admin.model;
+package com.zh.cloud.admin.model;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
@@ -11,7 +11,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 /**
  * EBean Model扩展类
  *
- * @author rewerma 2019-07-13 下午05:12:16
+ * @author zhimin.ma 2019-07-13 下午05:12:16
  * @version 1.0.0
  */
 @MappedSuperclass

@@ -1,4 +1,4 @@
-package com.alibaba.otter.canal.admin.config;
+package com.zh.cloud.admin.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

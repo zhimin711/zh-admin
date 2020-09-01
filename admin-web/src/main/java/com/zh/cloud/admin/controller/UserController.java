@@ -1,4 +1,4 @@
-package com.alibaba.otter.canal.admin.controller;
+package com.zh.cloud.admin.controller;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.otter.canal.admin.model.BaseModel;
-import com.alibaba.otter.canal.admin.model.User;
-import com.alibaba.otter.canal.admin.service.UserService;
+import com.zh.cloud.admin.model.BaseModel;
+import com.zh.cloud.admin.model.User;
+import com.zh.cloud.admin.service.UserService;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
 /**
  * 用户管理控制层
  *
- * @author rewerma 2019-07-13 下午05:12:16
+ * @author zhimin.ma 2019-07-13 下午05:12:16
  * @version 1.0.0
  */
 @RestController

@@ -1,4 +1,4 @@
-package com.alibaba.otter.canal.admin;
+package com.zh.cloud.admin;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.boot.Banner;
@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * 启动入口
  *
- * @author rewerma @ 2018-10-20
+ * @author zhimin.ma @ 2020-10-20
  * @version 1.0.0
  */
 @SpringBootApplication

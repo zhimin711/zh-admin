@@ -1,9 +1,9 @@
-package com.alibaba.otter.canal.admin.config;
+package com.zh.cloud.admin.config;
 
-import com.alibaba.otter.canal.admin.controller.UserController;
-import com.alibaba.otter.canal.admin.model.BaseModel;
-import com.alibaba.otter.canal.admin.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zh.cloud.admin.controller.UserController;
+import com.zh.cloud.admin.model.BaseModel;
+import com.zh.cloud.admin.model.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 /**
  * 相关MVC拦截器配置
  *
- * @author rewerma 2019-07-13 下午05:12:16
+ * @author zhimin.ma 2020-07-13 下午05:12:16
  * @version 1.0.0
  */
 @Configuration

@@ -1,13 +1,11 @@
-package com.alibaba.otter.canal.admin.service.impl;
+package com.zh.cloud.admin.service.impl;
 
-import java.security.NoSuchAlgorithmException;
-
+import com.zh.cloud.admin.common.exception.ServiceException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.otter.canal.admin.common.exception.ServiceException;
-import com.alibaba.otter.canal.admin.model.User;
-import com.alibaba.otter.canal.admin.service.UserService;
+import com.zh.cloud.admin.model.User;
+import com.zh.cloud.admin.service.UserService;
 
 /**
  * 用户信息业务层

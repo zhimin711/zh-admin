@@ -1,9 +1,9 @@
-package com.alibaba.otter.canal.admin.model;
+package com.zh.cloud.admin.model;
 
 /**
  * 基础Model
  *
- * @author rewerma 2019-07-13 下午05:12:16
+ * @author zhimin.ma 2020-07-13 下午05:12:16
  * @version 1.0.0
  */
 public class BaseModel<T> {
@@ -37,7 +37,7 @@ public class BaseModel<T> {
     }
 
     public static <T> BaseModel<T> getInstance(T data) {
-        BaseModel<T> baseModel = new BaseModel<>();
+        BaseModel<T> baseModel = new BaseModel<T>();
         baseModel.data = data;
         return baseModel;
     }

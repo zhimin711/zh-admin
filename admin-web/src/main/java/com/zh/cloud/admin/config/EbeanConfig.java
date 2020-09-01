@@ -1,4 +1,4 @@
-package com.alibaba.otter.canal.admin.config;
+package com.zh.cloud.admin.config;
 
 import io.ebean.EbeanServer;
 import io.ebean.EbeanServerFactory;
@@ -28,7 +28,7 @@ public class EbeanConfig {
         serverConfig.setDefaultServer(true);
         serverConfig.setNamingConvention(new UnderscoreNamingConvention());
         List<String> packages = new ArrayList<>();
-        packages.add("com.alibaba.otter.canal.admin.model");
+        packages.add("com.zh.cloud.admin.model");
         serverConfig.setPackages(packages);
         serverConfig.setName("ebeanServer");
         serverConfig.setDataSource(dataSource);

@@ -1,4 +1,4 @@
-package com.alibaba.otter.canal.admin.model;
+package com.zh.cloud.admin.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

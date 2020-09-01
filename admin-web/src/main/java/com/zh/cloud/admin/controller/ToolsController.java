@@ -1,22 +1,14 @@
-package com.alibaba.otter.canal.admin.controller;
+package com.zh.cloud.admin.controller;
 
-import com.alibaba.otter.canal.admin.model.BaseModel;
-import com.alibaba.otter.canal.admin.model.User;
-import com.alibaba.otter.canal.admin.service.UserService;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
+import com.zh.cloud.admin.model.BaseModel;
+import com.zh.cloud.admin.model.User;
 import org.apache.commons.lang.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 用户管理控制层
@@ -39,7 +31,7 @@ public class ToolsController {
      */
     @PutMapping(value = "encrypt")
     public BaseModel<String> encrypt(@RequestBody User user, @PathVariable String env,
-                                    HttpServletRequest httpServletRequest) {
+                                     HttpServletRequest httpServletRequest) {
         if(StringUtils.isBlank(user.getOldPassword())|| StringUtils.isBlank(user.getPassword())){
             BaseModel<String> model = BaseModel.getInstance(null);
             model.setCode(50014);

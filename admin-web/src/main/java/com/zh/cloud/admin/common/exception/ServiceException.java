@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.otter.canal.admin.common.exception;
+package com.zh.cloud.admin.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
+ * @author zhimin.ma
  * Service Logic Exception
  */
 @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
@@ -27,22 +28,22 @@ public class ServiceException extends RuntimeException {
 
     private static final long serialVersionUID = -663217666968123330L;
 
-    public ServiceException(){
+    public ServiceException() {
     }
 
-    public ServiceException(String message){
+    public ServiceException(String message) {
         super(message);
     }
 
-    public ServiceException(String message, Throwable cause){
+    public ServiceException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ServiceException(Throwable cause){
+    public ServiceException(Throwable cause) {
         super(cause);
     }
 
-    public ServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace){
+    public ServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

@@ -1,5 +1,7 @@
-package com.alibaba.otter.canal.admin.handler;
+package com.zh.cloud.admin.handler;
 
+import com.zh.cloud.admin.common.exception.ServiceException;
+import com.zh.cloud.admin.model.BaseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -7,9 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import com.alibaba.otter.canal.admin.common.exception.ServiceException;
-import com.alibaba.otter.canal.admin.model.BaseModel;
 
 /**
  * MVC异常拦截器
