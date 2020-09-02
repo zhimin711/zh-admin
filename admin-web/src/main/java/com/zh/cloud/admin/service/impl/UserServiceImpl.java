@@ -1,6 +1,7 @@
 package com.zh.cloud.admin.service.impl;
 
 import com.ch.utils.BeanExtUtils;
+import com.ch.utils.CommonUtils;
 import com.zh.cloud.admin.common.exception.ServiceException;
 import io.ebean.*;
 import org.apache.commons.lang.StringUtils;
@@ -51,6 +52,7 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> vm = BeanExtUtils.getDeclaredFieldValueMap(record);
         if (!vm.isEmpty()) {
             vm.forEach((k, v) -> {
+                if (CommonUtils.isEmpty(v)) return;
                 where.eq(k, v);
             });
         }
