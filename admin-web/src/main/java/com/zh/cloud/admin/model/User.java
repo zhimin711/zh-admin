@@ -16,7 +16,7 @@ import javax.persistence.Transient;
  * 用户信息实体类
  */
 @Entity
-@Table(name = "st_user")
+@Table(name = "canal_user")
 @Data
 public class User extends Model {
 

@@ -125,7 +125,7 @@
             <dependency>
                 <groupId>io.ebean</groupId>
                 <artifactId>ebean</artifactId>
-                <version>11.41.1</version>
+                <version>12.3.8</version>
             </dependency>
 
             <dependency>

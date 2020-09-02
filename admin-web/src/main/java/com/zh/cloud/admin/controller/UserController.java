@@ -1,27 +1,21 @@
 package com.zh.cloud.admin.controller;
 
+import com.ch.result.PageResult;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.zh.cloud.admin.model.BaseModel;
+import com.zh.cloud.admin.model.User;
+import com.zh.cloud.admin.service.UserService;
+import io.ebean.PagedList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.zh.cloud.admin.model.BaseModel;
-import com.zh.cloud.admin.model.User;
-import com.zh.cloud.admin.service.UserService;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 
 /**
  * 用户管理控制层
@@ -34,46 +28,39 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 public class UserController {
 
     public static final LoadingCache<String, User> loginUsers = Caffeine.newBuilder()
-                                                                  .maximumSize(10_000)
-                                                                  .expireAfterAccess(30, TimeUnit.MINUTES)
-                                                                  .build(key -> null); // 用户登录信息缓存
+            .maximumSize(10_000)
+            .expireAfterAccess(30, TimeUnit.MINUTES)
+            .build(key -> null); // 用户登录信息缓存
 
     @Autowired
-    UserService                                    userService;
+    private UserService userService;
 
     /**
      * 用户登录
      *
-     * @param user 账号密码
-     * @param env 环境变量
+     * @param record 账号密码
+     * @param env    环境变量
      * @return token
      */
-    @PostMapping(value = "/login")
-    public BaseModel<Map<String, String>> login(@RequestBody User user, @PathVariable String env) {
-        User loginUser = userService.find4Login(user.getUsername(), user.getPassword());
-        if (loginUser != null) {
-            Map<String, String> tokenResp = new HashMap<>();
-            String token = UUID.randomUUID().toString();
-            loginUsers.put(token, loginUser);
-            tokenResp.put("token", token);
-            return BaseModel.getInstance(tokenResp);
-        } else {
-            BaseModel<Map<String, String>> model = BaseModel.getInstance(null);
-            model.setCode(40001);
-            model.setMessage("Invalid username or password");
-            return model;
-        }
+//    @PostMapping(value = "/{page}/{size}")
+    @GetMapping(value = {"/{num:[0-9]+}/{size:[0-9]+}"})
+    public PageResult<User> page(User record,
+                                 @PathVariable(value = "num") int pageNum,
+                                 @PathVariable(value = "size") int pageSize,
+                                 @PathVariable String env) {
+        PagedList<User> pageInfo = userService.findPage(record, pageNum, pageSize);
+        return PageResult.success(pageInfo.getTotalCount(), pageInfo.getList());
     }
 
     /**
      * 获取用户信息
      *
      * @param token token
-     * @param env 环境变量
+     * @param env   环境变量
      * @return 用户信息
      */
-    @GetMapping(value = "/info")
-    public BaseModel<User> info(@RequestParam String token, @PathVariable String env) {
+    @GetMapping(value = "/{id}")
+    public BaseModel<User> info(@RequestParam String token, @PathVariable String env, @PathVariable Long id) {
         User user = loginUsers.getIfPresent(token);
         if (user != null) {
             return BaseModel.getInstance(user);
@@ -88,8 +75,8 @@ public class UserController {
     /**
      * 修改用户信息
      *
-     * @param user 用户信息
-     * @param env 环境变量
+     * @param user               用户信息
+     * @param env                环境变量
      * @param httpServletRequest httpServletRequest
      * @return 是否成功
      */
@@ -108,8 +95,8 @@ public class UserController {
      * @param env 环境变量
      * @return 是否成功
      */
-    @PostMapping(value = "/logout")
-    public BaseModel<String> logout(@PathVariable String env) {
+    @DeleteMapping
+    public BaseModel<String> delete(@PathVariable String env) {
         return BaseModel.getInstance("success");
     }
 }

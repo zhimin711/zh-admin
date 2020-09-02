@@ -1,11 +1,16 @@
 package com.zh.cloud.admin.service.impl;
 
+import com.ch.utils.BeanExtUtils;
 import com.zh.cloud.admin.common.exception.ServiceException;
+import io.ebean.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.zh.cloud.admin.model.User;
 import com.zh.cloud.admin.service.UserService;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 用户信息业务层
@@ -37,8 +42,19 @@ public class UserServiceImpl implements UserService {
         if (userTmp == null) {
             throw new ServiceException();
         }
-
-
         user.update("username", "nn:password");
+    }
+
+    public PagedList<User> findPage(User record, int pageNum, int pageSize) {
+        Query<User> query = User.find.query();
+        ExpressionList<User> where = query.where();
+        Map<String, Object> vm = BeanExtUtils.getDeclaredFieldValueMap(record);
+        if (!vm.isEmpty()) {
+            vm.forEach((k, v) -> {
+                where.eq(k, v);
+            });
+        }
+        query.setFirstRow(pageNum).setMaxRows(pageSize);
+        return query.findPagedList();
     }
 }
