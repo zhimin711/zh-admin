@@ -214,6 +214,15 @@ export default [
           title: '自定义图标'
         },
         component: () => import('@/view/components/icons/icons.vue')
+      },
+      {
+        path: 'lazyload_page',
+        name: 'lazyload_page',
+        meta: {
+          icon: '_bear',
+          title: '图片懒加载'
+        },
+        component: () => import('@/view/components/lazyload/index.vue')
       }
     ]
   },

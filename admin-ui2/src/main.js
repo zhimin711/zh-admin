@@ -15,6 +15,7 @@ import '@/assets/icons/iconfont.css'
 import TreeTable from 'tree-table-vue'
 import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
+import VueLazyload from 'vue-lazyload'
 // 实际打包时应该不引入mock
 /* eslint-disable */
 if (process.env.NODE_ENV !== 'production') require('@/mock')
@@ -24,6 +25,13 @@ Vue.use(iView, {
 })
 Vue.use(TreeTable)
 Vue.use(VOrgTree)
+
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: require('@/assets/images/error-page/404.jpg'),
+  loading: require('@/assets/images/loading1.gif'),
+  attempt: 1
+})
 /**
  * @description 注册admin内置插件
  */
