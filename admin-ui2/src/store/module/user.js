@@ -1,14 +1,16 @@
 import {
   login,
   logout,
-  getUserInfo,
+  getUserInfo
+} from '@/api/login'
+import {
   getMessage,
   getContentByMsgId,
   hasRead,
   removeReaded,
   restoreTrash,
   getUnreadCount
-} from '@/api/login'
+} from '@/api/message'
 import { setToken, getToken } from '@/libs/util'
 
 export default {
@@ -117,13 +119,14 @@ export default {
             if(res.data.success){
               // const data = res.data
               const data = res.data.rows[0]
-              debugger
               commit('setAvatar', data.avatar)
               commit('setUserName', data.name)
               commit('setUserId', data.user_id)
-              commit('setAccess', data.access)
+              commit('setAccess', [data.name])
               commit('setHasGetInfo', true)
               resolve(data)
+            } else {
+              reject(res.data)
             }
           }).catch(err => {
             reject(err)

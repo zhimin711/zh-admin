@@ -43,10 +43,17 @@ router.beforeEach((to, from, next) => {
         // 拉取用户信息，通过用户权限和跳转的页面的name来判断是否有权限访问;access必须是一个数组，如：['super_admin'] ['super_admin', 'admin']
         turnTo(to, user.access, next)
       }).catch(() => {
-        setToken('')
-        next({
-          name: 'login'
-        })
+        iView.Modal.warning({
+          title: '登录过期',
+          content: '登录已失效,请重新登录',
+          okText: '重新登录',
+          onOk: () => {
+            setToken('')
+            next({
+              name: 'login'
+            })
+          }
+        });
       })
     }
   }
