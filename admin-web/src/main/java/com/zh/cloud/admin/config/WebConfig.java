@@ -1,7 +1,7 @@
 package com.zh.cloud.admin.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zh.cloud.admin.controller.UserController;
+import com.zh.cloud.admin.controller.LoginController;
 import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.User;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import java.io.PrintWriter;
  * @author zhimin.ma 2020-07-13 下午05:12:16
  * @version 1.0.0
  */
-@Configuration
+//@Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
@@ -55,7 +55,7 @@ public class WebConfig implements WebMvcConfigurer {
                 String token = httpServletRequest.getHeader("X-Token");
                 boolean valid = false;
                 if (token != null) {
-                    User user = UserController.loginUsers.getIfPresent(token);
+                    User user = LoginController.loginUsers.getIfPresent(token);
                     if (user != null) {
                         valid = true;
                         httpServletRequest.setAttribute("user", user);

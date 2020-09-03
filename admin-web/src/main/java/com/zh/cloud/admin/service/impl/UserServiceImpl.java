@@ -1,7 +1,9 @@
 package com.zh.cloud.admin.service.impl;
 
+import com.ch.e.PubError;
 import com.ch.utils.BeanExtUtils;
 import com.ch.utils.CommonUtils;
+import com.ch.utils.ExceptionUtils;
 import com.zh.cloud.admin.common.exception.ServiceException;
 import io.ebean.*;
 import org.apache.commons.lang.StringUtils;
@@ -26,15 +28,12 @@ public class UserServiceImpl implements UserService {
 
     public User find4Login(String username, String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            return null;
+            ExceptionUtils._throw(PubError.USERNAME_OR_PASSWORD);
         }
         User user = User.find.query().where().eq("username", username).findOne();
         if (user == null) {
-            throw new ServiceException("user:" + username + " auth failed!");
+            ExceptionUtils._throw(PubError.EXISTS,"用户不存在!");
         }
-
-
-        user.setPassword("");
         return user;
     }
 
