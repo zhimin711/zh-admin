@@ -18,7 +18,7 @@ export default {
    */
   baseUrl: {
     dev: '/mock',
-    // dev: 'http://127.0.0.1:8089/',
+    dev2: '/api/v1',
     pro: 'https://produce.com'
   },
   /**

@@ -8,12 +8,12 @@ import {
   removeReaded,
   restoreTrash,
   getUnreadCount
-} from '@/api/user'
+} from '@/api/login'
 import { setToken, getToken } from '@/libs/util'
 
 export default {
   state: {
-    userName: '',
+    username: '',
     userId: '',
     avatarImgPath: '',
     token: getToken(),
@@ -33,7 +33,7 @@ export default {
       state.userId = id
     },
     setUserName (state, name) {
-      state.userName = name
+      state.username = name
     },
     setAccess (state, access) {
       state.access = access
@@ -74,16 +74,20 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, { userName, password }) {
-      userName = userName.trim()
+    handleLogin ({ commit }, { username, password }) {
+      username = username.trim()
       return new Promise((resolve, reject) => {
         login({
-          userName,
+          username,
           password
         }).then(res => {
-          const data = res.data
-          commit('setToken', data.token)
-          resolve()
+          if (res.data.success) {
+            const token = res.data.rows[0]
+            commit('setToken', token)
+            resolve()
+          } else {
+            reject(res)
+          }
         }).catch(err => {
           reject(err)
         })
@@ -110,13 +114,17 @@ export default {
       return new Promise((resolve, reject) => {
         try {
           getUserInfo(state.token).then(res => {
-            const data = res.data
-            commit('setAvatar', data.avatar)
-            commit('setUserName', data.name)
-            commit('setUserId', data.user_id)
-            commit('setAccess', data.access)
-            commit('setHasGetInfo', true)
-            resolve(data)
+            if(res.data.success){
+              // const data = res.data
+              const data = res.data.rows[0]
+              debugger
+              commit('setAvatar', data.avatar)
+              commit('setUserName', data.name)
+              commit('setUserId', data.user_id)
+              commit('setAccess', data.access)
+              commit('setHasGetInfo', true)
+              resolve(data)
+            }
           }).catch(err => {
             reject(err)
           })

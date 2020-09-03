@@ -18,12 +18,12 @@ const USER_MAP = {
 
 export const login = req => {
   req = JSON.parse(req.body)
-  return { token: USER_MAP[req.userName].token }
+  return { success: true, rows: [USER_MAP[req.username].token] }
 }
 
 export const getUserInfo = req => {
   const params = getParams(req.url)
-  return USER_MAP[params.token]
+  return { success: true, rows: [USER_MAP[params.token]] }
 }
 
 export const logout = req => {
