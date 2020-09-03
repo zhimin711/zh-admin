@@ -20,8 +20,8 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0.0
  */
 @RestController
-@RequestMapping("/api/{env}")
-public class LoginController {
+@RequestMapping("/api/{env}/message")
+public class MessageController {
 
     public static final LoadingCache<String, User> loginUsers = Caffeine.newBuilder()
             .maximumSize(10_000)
@@ -29,24 +29,7 @@ public class LoginController {
             .build(key -> null); // 用户登录信息缓存
 
     @Autowired
-    private UserService userService;
-
-    /**
-     * 用户登录
-     *
-     * @param user 账号密码
-     * @param env  环境变量
-     * @return token
-     */
-    @PostMapping(value = "/login")
-    public Result<String> login(@RequestBody User user, @PathVariable String env) {
-        return ResultUtils.wrapFail(() -> {
-            User loginUser = userService.find4Login(user.getUsername(), user.getPassword());
-            String token = UUID.randomUUID().toString();
-            loginUsers.put(token, loginUser);
-            return token;
-        });
-    }
+    UserService userService;
 
     /**
      * 获取用户信息
@@ -55,21 +38,10 @@ public class LoginController {
      * @param env   环境变量
      * @return 用户信息
      */
-    @GetMapping(value = "/login/user")
-    public Result<User> loginUser(@RequestParam String token, @PathVariable String env) {
+    @GetMapping
+    public Result<User> loginMessage(@RequestParam String token, @PathVariable String env) {
         return ResultUtils.wrapFail(() -> {
             return loginUsers.getIfPresent(token);
         });
-    }
-
-    /**
-     * 用户退出
-     *
-     * @param env 环境变量
-     * @return 是否成功
-     */
-    @PostMapping(value = "/logout")
-    public BaseModel<String> logout(@PathVariable String env) {
-        return BaseModel.getInstance("success");
     }
 }
