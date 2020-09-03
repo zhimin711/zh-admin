@@ -442,6 +442,35 @@ export default [
     ]
   },
   {
+    path: '/upms',
+    name: 'upms',
+    meta: {
+      icon: 'ios-stats',
+      title: '系统管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'user',
+        name: 'user',
+        meta: {
+          icon: 'md-add',
+          title: '用户管理'
+        },
+        component: () => import('@/view/upms/user/index.vue')
+      },
+      {
+        path: 'role',
+        name: 'role',
+        meta: {
+          icon: 'md-download',
+          title: '导出EXCEL'
+        },
+        component: () => import('@/view/upms/user/index.vue')
+      }
+    ]
+  },
+  {
     path: '/argu',
     name: 'argu',
     meta: {
