@@ -46,5 +46,6 @@ export default {
   lazyload_page: '圖片懒加载',
   upms: '系统管理',
   upms_user: '用户管理',
+  user_model_title: '用户管理',
   upms_role: '角色管理'
 }

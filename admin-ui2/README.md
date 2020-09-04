@@ -3,7 +3,7 @@
         <img width="200" src="https://file.iviewui.com/logo-new.svg">
     </a>
 </p>
-
+API Doc: http://v3.iviewui.com/components/table#GDBTHL
 <h1>
 iView Admin
     <h3>Vue.js 2.0 admin management system template based on iView.</h3>

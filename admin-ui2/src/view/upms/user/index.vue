@@ -1,16 +1,34 @@
 <template>
   <div>
     <Card>
-      <tables ref="tables" editable searchable search-place="top" v-model="tableData" :columns="columns" @on-delete="handleDelete"/>
-      <Button style="margin: 10px 0;" type="primary" @click="exportExcel">查询</Button>
+      <Form ref="formInline" :model="query1.params" inline :label-width="80">
+        <FormItem prop="username" label="用户名">
+          <Input type="text" v-model="query1.params.username" placeholder="用户名">
+          </Input>
+        </FormItem>
+        <FormItem prop="name" label="用户名称">
+          <Input type="text" v-model="query1.params.name" placeholder="名称">
+          </Input>
+        </FormItem>
+      </Form>
+      <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch">查询</Button>
+      <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">新增</Button>
+      <Table ref="tables" :data="tableData" :columns="columns">
+        <template slot-scope="{ row, index }" slot="action">
+          <Button type="primary" size="small" style="margin-right: 5px" @click="handleEdit(row, index)">View</Button>
+          <Button type="error" size="small" @click="handleDelete(row,index)">Delete</Button>
+        </template>
+      </Table>
       <Page :total="tablePager.total" show-sizer show-elevator show-total />
 
       <Modal v-model="userModal">
         <p slot="header">
-          请注意，您当前正在对<span style="color:red; vertical-align: top;">{{record.username}}</span> 用户进行密码重置操作！
+          用户 新增<!--{{record.username}}-->
         </p>
-        <Form ref="formCustom" :model="record" :rules="recordRules" :label-width="80">
-          <FormItem label="新密码" prop="password" required>
+        <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">
+          <FormItem label="用户名" prop="username" required>
+            <i-input type="text" v-model="record.username" :disabled="usernameDisabled"></i-input>
+          </FormItem><FormItem label="新密码" prop="password" required>
             <i-input type="password" v-model="record.password"></i-input>
           </FormItem>
           <FormItem label="确认密码" prop="passwdCheck">
@@ -18,8 +36,8 @@
           </FormItem>
         </Form>
         <div slot="footer">
-          <Button type="primary" @click="handleSubmit('record')" :loading="loading">提交</Button>
-          <Button @click="()=>{this.userModal = false}" style="margin-left: 8px" :disabled="loading">取消
+          <Button type="primary" @click="handleSubmit('recordForm')" :loading="loading">提交</Button>
+          <Button @click="cancelRecord" style="margin-left: 8px" :disabled="loading">取消
           </Button>
         </div>
       </Modal>
@@ -48,6 +66,11 @@
 <script>
 import Tables from '_c/tables'
 import { getPageUser } from '@/api/upms/user'
+
+const defaultR = {
+  username: '',
+  password: ''
+}
 export default {
   name: 'UpmsUser',
   components: {
@@ -57,6 +80,7 @@ export default {
     return {
       loading: false,
       userModal: false,
+      usernameDisabled: false,
       record: {
         username: '',
         password: ''
@@ -64,31 +88,15 @@ export default {
       recordRules: {},
       roleModal: false,
       columns: [
-        { title: '用户名', key: 'username', editable: true },
-        { title: '用户昵称', key: 'name', sortable: true },
+        { title: '用户名', key: 'username' },
+        { title: '用户昵称', key: 'name' },
         { title: '创建时间', key: 'creationDate' },
         {
           title: '操作',
-          key: 'handle',
-          options: ['delete'],
-          button: [
-            (h, params, vm) => {
-              return h('Poptip', {
-                props: {
-                  confirm: true,
-                  title: '你确定要删除吗?'
-                },
-                on: {
-                  'on-ok': () => {
-                    vm.$emit('on-delete', params)
-                    vm.$emit('input', params.tableData.filter((item, index) => index !== params.row.initRowIndex))
-                  }
-                }
-              }, [
-                h('Button', '自定义删除')
-              ])
-            }
-          ]
+          slot: 'action',
+          fixed: 'right',
+          width: 150,
+          align: 'center'
         }
       ],
       query1: {
@@ -103,14 +111,25 @@ export default {
     }
   },
   methods: {
+    handleSearch () {
+      this.getPageUser()
+    },
+    handleAdd () {
+      this.userModal = true
+      this.usernameDisabled = false
+      this.record = Object.assign({}, defaultR)
+    },
+    handleEdit (row) {
+      this.userModal = true
+      this.usernameDisabled = true
+      this.record = Object.assign({}, row)
+    },
     handleDelete (params) {
       console.log(params)
     },
-    exportExcel () {
-      this.exportEdit()
-    },
-    exportEdit () {
-      this.userModal = true
+    cancelRecord () {
+      this.userModal = false
+      this.$refs.recordForm.resetFields()
     },
     getPageUser () {
       getPageUser(this.query1).then(res => {

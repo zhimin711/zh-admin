@@ -454,7 +454,7 @@ export default [
         path: 'user',
         name: 'upms_user',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-person',
           title: '用户管理'
         },
         component: () => import('@/view/upms/user/index.vue')
@@ -463,7 +463,7 @@ export default [
         path: 'role',
         name: 'upms_role',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-person-stalker',
           title: '角色管理'
         },
         component: () => import('@/view/upms/user/index.vue')
