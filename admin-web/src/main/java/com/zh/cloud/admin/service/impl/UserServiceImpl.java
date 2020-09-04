@@ -1,6 +1,8 @@
 package com.zh.cloud.admin.service.impl;
 
 import com.ch.e.PubError;
+import com.ch.result.InvokerPage;
+import com.ch.result.ResultUtils;
 import com.ch.utils.BeanExtUtils;
 import com.ch.utils.CommonUtils;
 import com.ch.utils.ExceptionUtils;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.zh.cloud.admin.model.User;
 import com.zh.cloud.admin.service.UserService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +35,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = User.find.query().where().eq("username", username).findOne();
         if (user == null) {
-            ExceptionUtils._throw(PubError.EXISTS,"用户不存在!");
+            ExceptionUtils._throw(PubError.EXISTS, "用户不存在!");
         }
         return user;
     }
@@ -45,17 +48,29 @@ public class UserServiceImpl implements UserService {
         user.update("username", "nn:password");
     }
 
-    public PagedList<User> findPage(User record, int pageNum, int pageSize) {
+    public InvokerPage.Page<User> findPage(User record, int pageNum, int pageSize) {
+        Query<User> query = getBaseQuery(record);
+//        Query<User> queryCnt = query.copy();
+//        List<User> records = query.setFirstRow(ResultUtils.calcPageStart(pageNum, pageSize)).setMaxRows(pageSize).findList();
+        PagedList<User> page = query.setFirstRow(ResultUtils.calcPageStart(pageNum, pageSize)).setMaxRows(pageSize).findPagedList();
+
+        return InvokerPage.Page.build(page.getTotalCount(), page.getList());
+    }
+
+
+    private Query<User> getBaseQuery(User record) {
         Query<User> query = User.find.query();
-        ExpressionList<User> where = query.where();
+//        query.fetch("canalCluster", "name").setDisableLazyLoading(true);
+
+
         Map<String, Object> vm = BeanExtUtils.getDeclaredFieldValueMap(record);
         if (!vm.isEmpty()) {
             vm.forEach((k, v) -> {
                 if (CommonUtils.isEmpty(v)) return;
-                where.eq(k, v);
+                query.where().eq(k, v);
             });
         }
-        query.setFirstRow(pageNum).setMaxRows(pageSize);
-        return query.findPagedList();
+
+        return query;
     }
 }

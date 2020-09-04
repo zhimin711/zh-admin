@@ -1,7 +1,5 @@
 package com.zh.cloud.admin.controller;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.User;
 import com.zh.cloud.admin.service.UserService;
@@ -9,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 用户管理控制层
@@ -20,11 +17,6 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("/api/{env}/profile")
 public class ProfileController {
-
-    public static final LoadingCache<String, User> loginUsers = Caffeine.newBuilder()
-            .maximumSize(10_000)
-            .expireAfterAccess(30, TimeUnit.MINUTES)
-            .build(key -> null); // 用户登录信息缓存
 
     @Autowired
     UserService userService;
@@ -43,7 +35,7 @@ public class ProfileController {
                                     HttpServletRequest httpServletRequest) {
         userService.update(user);
         String token = (String) httpServletRequest.getAttribute("token");
-        loginUsers.put(token, user);
+        LoginController.loginUsers.put(token, user);
         return BaseModel.getInstance("success");
     }
 

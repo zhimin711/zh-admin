@@ -1,5 +1,6 @@
 package com.zh.cloud.admin.controller.upms;
 
+import com.ch.result.InvokerPage;
 import com.ch.result.PageResult;
 import com.zh.cloud.admin.controller.LoginController;
 import com.zh.cloud.admin.model.BaseModel;
@@ -38,8 +39,8 @@ public class UserController {
                                  @PathVariable(value = "num") int pageNum,
                                  @PathVariable(value = "size") int pageSize,
                                  @PathVariable String env) {
-        PagedList<User> pageInfo = userService.findPage(record, pageNum, pageSize);
-        return PageResult.success(pageInfo.getTotalCount(), pageInfo.getList());
+        InvokerPage.Page<User> page = userService.findPage(record, pageNum, pageSize);
+        return PageResult.success(page);
     }
 
     /**
