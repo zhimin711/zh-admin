@@ -116,7 +116,7 @@ export default {
       return new Promise((resolve, reject) => {
         try {
           getUserInfo(state.token).then(res => {
-            if(res.data.success){
+            if (res.data.success) {
               // const data = res.data
               const data = res.data.rows[0]
               commit('setAvatar', data.avatar)

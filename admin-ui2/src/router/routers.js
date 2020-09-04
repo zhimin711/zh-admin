@@ -445,26 +445,26 @@ export default [
     path: '/upms',
     name: 'upms',
     meta: {
-      icon: 'ios-stats',
+      icon: 'ios-menu',
       title: '系统管理'
     },
     component: Main,
     children: [
       {
         path: 'user',
-        name: 'user',
+        name: 'upms_user',
         meta: {
-          icon: 'md-add',
+          icon: 'md-funnel',
           title: '用户管理'
         },
         component: () => import('@/view/upms/user/index.vue')
       },
       {
         path: 'role',
-        name: 'role',
+        name: 'upms_role',
         meta: {
-          icon: 'md-download',
-          title: '导出EXCEL'
+          icon: 'md-funnel',
+          title: '角色管理'
         },
         component: () => import('@/view/upms/user/index.vue')
       }

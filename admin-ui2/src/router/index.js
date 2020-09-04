@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
               name: 'login'
             })
           }
-        });
+        })
       })
     }
   }

@@ -42,6 +42,9 @@ export default {
   tree_table_page: 'Tree Table',
   org_tree_page: 'Org Tree',
   drag_drawer_page: 'Draggable Drawer',
-  tree_select_page: 'Tree Selector'
-  , lazyload_page: 'Image Lazyload'
+  tree_select_page: 'Tree Selector',
+  lazyload_page: 'Image Lazyload',
+  upms: 'System Manager',
+  upms_user: 'User Manager',
+  upms_role: 'Role Manager'
 }

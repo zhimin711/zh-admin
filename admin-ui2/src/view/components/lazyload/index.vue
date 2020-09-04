@@ -9,7 +9,7 @@
       </ul>
     </div>-->
     <div class="img-list-2" v-lazy-container="{ selector: 'img'}">
-      <img v-for="img in list" :data-src="img.src" width="100%" height="400" class="lazy-img-fadein">
+      <img v-for="img in list" :data-src="img.src" :key="img.src" width="100%" height="400" class="lazy-img-fadein">
 <!--      <img data-src="dist/avatar/test99.jpg" width="100%" height="400"
            class="lazy-img-fadein" src="dist/404.jpg?6666" lazy="error">
       <img data-src="dist/avatar/test2.jpg" width="100%" height="400"
@@ -43,30 +43,30 @@
 </template>
 
 <script>
-  export default {
-    name: 'image_lazyload',
-    data() {
-      return {
-        list: [
-          {src: 'http://106.12.140.185/upload/images/20200607/2c90808472819df201728f2cf5e90007.jpg', id: '1'},
-          {src: 'http://106.12.140.185/upload/article/20190404/0000000069e9086e0169e9188e820002.jpg', id: '3'},
-          {src: 'http://106.12.140.185/upload/images/20200315/2c90808470dd49600170dd61de9c000a.png', id: '4'},
-          {src: 'http://106.12.140.185/upload/images/20200315/2c90808470dd49600170dd707cbb0010.png', id: '5'},
-          {src: 'http://106.12.140.185/upload/images/20200315/2c90808470dd49600170dd707cbb0010.png', id: '6'},
-          {src: 'http://106.12.140.185/upload/article/20190404/0000000069e9086e0169e91e6e380007.jpg', id: '7'},
-          {src: 'http://106.12.140.185/upload/images/20200315/2c90808470dd49600170dd5c783f0004.png', id: '8'},
-          {src: 'http://106.12.140.185/upload/images/20190624/2c9080846b8a1741016b8a1741900000.png', id: '9'},
-          {src: 'http://106.12.140.185/upload/article/20190404/0000000069e9086e0169e91b73850005.jpg', id: '10'},
-          {src: 'http://106.12.140.185/upload/ue/image/20190402/1554226698747020219.jpg', id: '2'}
-        ]
-      }
-    },
-    methods: {
-      handle(scope) {
-        console.log(scope)
-      }
+export default {
+  name: 'image_lazyload',
+  data () {
+    return {
+      list: [
+        { src: 'http://106.12.140.185/upload/images/20200607/2c90808472819df201728f2cf5e90007.jpg', id: '1' },
+        { src: 'http://106.12.140.185/upload/article/20190404/0000000069e9086e0169e9188e820002.jpg', id: '3' },
+        { src: 'http://106.12.140.185/upload/images/20200315/2c90808470dd49600170dd61de9c000a.png', id: '4' },
+        { src: 'http://106.12.140.185/upload/images/20200315/2c90808470dd49600170dd707cbb0010.png', id: '5' },
+        { src: 'http://106.12.140.185/upload/images/20200315/2c90808470dd49600170dd707cbb0010.png', id: '6' },
+        { src: 'http://106.12.140.185/upload/article/20190404/0000000069e9086e0169e91e6e380007.jpg', id: '7' },
+        { src: 'http://106.12.140.185/upload/images/20200315/2c90808470dd49600170dd5c783f0004.png', id: '8' },
+        { src: 'http://106.12.140.185/upload/images/20190624/2c9080846b8a1741016b8a1741900000.png', id: '9' },
+        { src: 'http://106.12.140.185/upload/article/20190404/0000000069e9086e0169e91b73850005.jpg', id: '10' },
+        { src: 'http://106.12.140.185/upload/ue/image/20190402/1554226698747020219.jpg', id: '2' }
+      ]
+    }
+  },
+  methods: {
+    handle (scope) {
+      console.log(scope)
     }
   }
+}
 </script>
 
 <style>
