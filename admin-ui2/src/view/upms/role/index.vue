@@ -23,7 +23,7 @@
       </Table>
       <Page :total="tablePager.total" show-sizer show-elevator show-total />
 
-      <Modal v-model="userModal" @on-cancel="cancelRecord">
+      <Modal v-model="recordModal" @on-cancel="cancelRecord">
         <p slot="header">
           用户
           <span v-if="userModalType === 'add'">新增</span>
@@ -72,7 +72,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { getPageUser } from '@/api/upms/user'
+import { getPageUser } from '@/api/upms/role'
 
 const defaultR = {
   username: '',
@@ -125,13 +125,13 @@ export default {
       this.getPageUser()
     },
     handleAdd () {
-      this.userModal = true
+      this.recordModal = true
       this.userModalType = 'add'
       this.usernameDisabled = false
       this.record = Object.assign({}, defaultR)
     },
     handleEdit (row) {
-      this.userModal = true
+      this.recordModal = true
       this.userModalType = 'edit'
       this.usernameDisabled = true
       this.record = Object.assign({}, row)
@@ -140,7 +140,7 @@ export default {
       console.log(params)
     },
     cancelRecord () {
-      this.userModal = false
+      this.recordModal = false
       this.$refs.recordForm.resetFields()
     },
     getPageUser () {

@@ -463,10 +463,10 @@ export default [
         path: 'role',
         name: 'upms_role',
         meta: {
-          icon: 'md-person-stalker',
+          icon: 'md-people',
           title: '角色管理'
         },
-        component: () => import('@/view/upms/user/index.vue')
+        component: () => import('@/view/upms/role/index.vue')
       }
     ]
   },
