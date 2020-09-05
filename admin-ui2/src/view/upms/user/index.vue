@@ -87,8 +87,8 @@ export default {
     return {
       loading: false,
       recordModal: false,
-      userModalType: 'add',
-      usernameDisabled: false,
+      recordModalType: 'add',
+      codeDisabled: false,
       record: {
         username: '',
         password: ''

@@ -26,21 +26,15 @@
       <Modal v-model="recordModal" @on-cancel="cancelRecord">
         <p slot="header">
           用户
-          <span v-if="userModalType === 'add'">新增</span>
-          <span v-if="userModalType === 'edit'">修改</span>
+          <span v-if="recordModalType === 'add'">新增</span>
+          <span v-if="recordModalType === 'edit'">修改</span>
         </p>
         <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">
-          <FormItem label="账号" prop="userId" required>
-            <i-input type="text" v-model="record.userId" :disabled="usernameDisabled"></i-input>
+          <FormItem label="代码" prop="code" required>
+            <i-input type="text" v-model="record.code" :disabled="codeDisabled"></i-input>
           </FormItem>
-          <FormItem label="用户名" prop="username" required>
-            <i-input type="text" v-model="record.username" :disabled="usernameDisabled"></i-input>
-          </FormItem>
-          <FormItem label="新密码" prop="password" required>
-            <i-input type="password" v-model="record.password"></i-input>
-          </FormItem>
-          <FormItem label="确认密码" prop="passwdCheck">
-            <i-input type="password" v-model="record.passwdCheck"></i-input>
+          <FormItem label="名称" prop="name" required>
+            <i-input type="text" v-model="record.name"></i-input>
           </FormItem>
         </Form>
         <div slot="footer">
@@ -72,14 +66,14 @@
 
 <script>
 import Tables from '_c/tables'
-import { getPageUser } from '@/api/upms/role'
+import { getPageRole } from '@/api/upms/role'
 
-const defaultR = {
-  username: '',
-  password: ''
+const defaultRecord = {
+  code: '',
+  name: ''
 }
 export default {
-  name: 'UpmsUser',
+  name: 'UpmsRole',
   components: {
     Tables
   },
@@ -87,8 +81,8 @@ export default {
     return {
       loading: false,
       recordModal: false,
-      userModalType: 'add',
-      usernameDisabled: false,
+      recordModalType: 'add',
+      codeDisabled: false,
       record: {
         username: '',
         password: ''
@@ -96,10 +90,8 @@ export default {
       recordRules: {},
       roleModal: false,
       columns: [
-        { title: '用户账号', key: 'userId' },
-        { title: '用户名', key: 'username' },
-        { title: '用户昵称', key: 'realName' },
-        { title: '邮箱', key: 'email' },
+        { title: '代码', key: 'code' },
+        { title: '名称', key: 'name' },
         { title: '创建时间', key: 'createAt' },
         {
           title: '操作',
@@ -122,18 +114,18 @@ export default {
   },
   methods: {
     handleSearch () {
-      this.getPageUser()
+      this.getPage()
     },
     handleAdd () {
       this.recordModal = true
-      this.userModalType = 'add'
-      this.usernameDisabled = false
-      this.record = Object.assign({}, defaultR)
+      this.recordModalType = 'add'
+      this.codeDisabled = false
+      this.record = Object.assign({}, defaultRecord)
     },
     handleEdit (row) {
       this.recordModal = true
-      this.userModalType = 'edit'
-      this.usernameDisabled = true
+      this.recordModalType = 'edit'
+      this.codeDisabled = true
       this.record = Object.assign({}, row)
     },
     handleDelete (params) {
@@ -143,15 +135,18 @@ export default {
       this.recordModal = false
       this.$refs.recordForm.resetFields()
     },
-    getPageUser () {
-      getPageUser(this.query1).then(res => {
+    handleSubmit () {
+      console.log(this.record)
+    },
+    getPage () {
+      getPageRole(this.query1).then(res => {
         this.tableData = res.data.rows
         this.tablePager.total = res.data.total
       })
     }
   },
   mounted () {
-    this.getPageUser()
+    this.getPage()
   }
 }
 </script>
