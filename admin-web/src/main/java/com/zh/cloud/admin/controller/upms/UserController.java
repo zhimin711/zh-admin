@@ -4,9 +4,8 @@ import com.ch.result.InvokerPage;
 import com.ch.result.PageResult;
 import com.zh.cloud.admin.controller.LoginController;
 import com.zh.cloud.admin.model.BaseModel;
-import com.zh.cloud.admin.model.User;
+import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
-import io.ebean.PagedList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

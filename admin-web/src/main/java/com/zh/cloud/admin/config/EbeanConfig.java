@@ -29,6 +29,7 @@ public class EbeanConfig {
         serverConfig.setNamingConvention(new UnderscoreNamingConvention());
         List<String> packages = new ArrayList<>();
         packages.add("com.zh.cloud.admin.model");
+        packages.add("com.zh.cloud.admin.model.upms");
         serverConfig.setPackages(packages);
         serverConfig.setName("ebeanServer");
         serverConfig.setDataSource(dataSource);

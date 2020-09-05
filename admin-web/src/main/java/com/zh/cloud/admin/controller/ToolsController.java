@@ -2,7 +2,7 @@ package com.zh.cloud.admin.controller;
 
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import com.zh.cloud.admin.model.BaseModel;
-import com.zh.cloud.admin.model.User;
+import com.zh.cloud.admin.model.upms.User;
 import org.apache.commons.lang.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.core.env.StandardEnvironment;

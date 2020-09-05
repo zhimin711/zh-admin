@@ -1,8 +1,7 @@
 package com.zh.cloud.admin.service;
 
 import com.ch.result.InvokerPage;
-import com.zh.cloud.admin.model.User;
-import io.ebean.PagedList;
+import com.zh.cloud.admin.model.upms.User;
 
 /**
  *

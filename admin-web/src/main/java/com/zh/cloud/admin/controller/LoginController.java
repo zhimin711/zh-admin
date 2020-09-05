@@ -5,7 +5,7 @@ import com.ch.result.ResultUtils;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.zh.cloud.admin.model.BaseModel;
-import com.zh.cloud.admin.model.User;
+import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -2,7 +2,7 @@ package com.zh.cloud.admin.controller;
 
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
-import com.zh.cloud.admin.model.User;
+import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

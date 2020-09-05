@@ -11,12 +11,10 @@ import io.ebean.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.zh.cloud.admin.model.User;
+import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 用户信息业务层
