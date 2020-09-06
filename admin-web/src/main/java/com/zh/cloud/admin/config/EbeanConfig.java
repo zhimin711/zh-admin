@@ -1,17 +1,15 @@
 package com.zh.cloud.admin.config;
 
-import io.ebean.EbeanServer;
-import io.ebean.EbeanServerFactory;
-import io.ebean.config.ServerConfig;
+import io.ebean.Database;
+import io.ebean.DatabaseFactory;
+import io.ebean.config.DatabaseConfig;
 import io.ebean.config.UnderscoreNamingConvention;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Ebean 配置
@@ -23,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 public class EbeanConfig {
 
     @Bean("ebeanServer")
-    public EbeanServer ebeanServer(DataSource dataSource) {
-        ServerConfig serverConfig = new ServerConfig();
+    public Database ebeanServer(DataSource dataSource) {
+        DatabaseConfig serverConfig = new DatabaseConfig();
         serverConfig.setDefaultServer(true);
         serverConfig.setNamingConvention(new UnderscoreNamingConvention());
         List<String> packages = new ArrayList<>();
@@ -36,6 +34,7 @@ public class EbeanConfig {
         serverConfig.setDatabaseSequenceBatchSize(1);
         serverConfig.setDdlGenerate(false);
         serverConfig.setDdlRun(false);
-        return EbeanServerFactory.create(serverConfig);
+
+        return DatabaseFactory.create(serverConfig);
     }
 }

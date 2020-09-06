@@ -1,21 +1,18 @@
 package com.zh.cloud.admin.controller.upms;
 
+import com.ch.Constants;
 import com.ch.result.InvokerPage;
 import com.ch.result.PageResult;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
-import com.zh.cloud.admin.controller.LoginController;
-import com.zh.cloud.admin.model.BaseModel;
+import com.ch.utils.CommonUtils;
 import com.zh.cloud.admin.model.upms.Role;
-import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.upms.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
- * 解决管理控制层
+ * 角色管理控制层
  *
  * @author zhimin.ma 2020-07-13 下午05:12:16
  * @version 1.0.0
@@ -46,14 +43,14 @@ public class RoleController {
     }
 
     /**
-     * 获取信息
+     * 获取详细信息
      *
      * @param env 环境变量
      * @param id  主键
      * @return 信息
      */
     @GetMapping(value = "/{id}")
-    public Result<Role> info(@PathVariable String env, @PathVariable Long id) {
+    public Result<Role> detail(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> roleService.find(id));
     }
 
@@ -64,8 +61,27 @@ public class RoleController {
      * @param env    环境变量
      * @return 是否成功
      */
-    @PutMapping(value = "")
-    public Result<String> update(@RequestBody Role record, @PathVariable String env) {
+    @PostMapping(value = "")
+    public Result<String> add(@RequestBody Role record, @PathVariable String env) {
+        return ResultUtils.wrapFail(() -> {
+            if (CommonUtils.isNotEmpty(record.getCode())) {
+                record.setCode(record.getCode().toUpperCase());
+            }
+            record.setType(Constants.ENABLED);
+            roleService.save(record);
+            return "";
+        });
+    }
+
+    /**
+     * 修改信息
+     *
+     * @param record 信息
+     * @param env    环境变量
+     * @return 是否成功
+     */
+    @PutMapping(value = "/{id}")
+    public Result<String> edit(@RequestBody Role record, @PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
             roleService.update(record);
             return "";
@@ -73,14 +89,14 @@ public class RoleController {
     }
 
     /**
-     * 用户退出
+     * 删除
      *
      * @param env 环境变量
      * @return 是否成功
      */
     @DeleteMapping(value = "/{id}")
     public Result<String> delete(@PathVariable String env, @PathVariable Long id) {
-        return ResultUtils.wrapFail(()->{
+        return ResultUtils.wrapFail(() -> {
             roleService.delete(id);
             return "";
         });

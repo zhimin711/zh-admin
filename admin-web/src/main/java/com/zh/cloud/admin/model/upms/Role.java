@@ -3,6 +3,7 @@ package com.zh.cloud.admin.model.upms;
 import com.zh.cloud.admin.model.Model;
 import io.ebean.Finder;
 import io.ebean.annotation.WhenCreated;
+import io.ebean.annotation.WhenModified;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -52,6 +53,7 @@ public class Role extends Model {
     private String code;
 
     @ApiModelProperty(value = "类型: 1.系统 2.自定义)")
+//    @Column(columnDefinition = "char default '2'")
     private String type;
 
     @ApiModelProperty(value = "描述")
@@ -71,6 +73,7 @@ public class Role extends Model {
     private String updateBy;
 
     @ApiModelProperty(value = "更新时间")
+    @WhenModified
     private Date updateAt;
 
 

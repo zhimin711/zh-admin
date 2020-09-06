@@ -33,15 +33,15 @@ public class RoleServiceImpl implements RoleService {
         if (userTmp != null) {
             ExceptionUtils._throw(PubError.EXISTS, "角色代码存在！");
         }
-        record.insert();
+        record.save();
     }
 
     public void update(Role record) {
         Role userTmp = Role.find.query().where().eq("code", record.getCode()).findOne();
         if (userTmp == null) {
-            throw new ServiceException();
+            ExceptionUtils._throw(PubError.NOT_EXISTS, "角色代码不存在！");
         }
-        record.update("name", "nn:code");
+        record.update("name", "nn:code", "status");
     }
 
     public InvokerPage.Page<Role> findPage(Role record, int pageNum, int pageSize) {

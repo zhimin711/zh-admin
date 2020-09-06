@@ -1,5 +1,7 @@
 package com.zh.cloud.admin.model;
 
+import io.ebean.DB;
+import io.ebean.Database;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 
@@ -32,8 +34,8 @@ public abstract class Model extends io.ebean.Model {
 
     public void saveOrUpdate() {
         try {
-            EbeanServer ebeanServer = Ebean.getDefaultServer();
-            Object id = ebeanServer.getBeanId(this);
+            Database database = DB.getDefault();
+            Object id = database.getBeanId(this);
             if (id == null) {
                 init();
                 this.save();
@@ -47,12 +49,12 @@ public abstract class Model extends io.ebean.Model {
 
     public void update(String... propertiesNames) {
         try {
-            EbeanServer ebeanServer = Ebean.getDefaultServer();
-            Object id = ebeanServer.getBeanId(this);
+            Database database = DB.getDefault();
+            Object id = database.getBeanId(this);
             if (id == null) {
                 return;
             }
-            Object model = ebeanServer.createQuery(this.getClass()).where().idEq(id).findOne();
+            Object model = database.createQuery(this.getClass()).where().idEq(id).findOne();
             if (model == null) {
                 return;
             }
@@ -68,7 +70,7 @@ public abstract class Model extends io.ebean.Model {
                     PropertyUtils.setProperty(model, propertyName, val);
                 }
             }
-            ebeanServer.update(model);
+            database.update(model);
         } catch (Exception e) {
             throw new OptimisticLockException(e);
         }
