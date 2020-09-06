@@ -23,7 +23,7 @@
       </Table>
       <Page :total="pq.total" :current.sync="pq.page" @on-change="handlePage" @on-page-size-change="handleSize" show-sizer show-elevator show-total />
 
-      <Modal v-model="recordModal" @on-cancel="cancelRecord">
+      <Modal v-model="recordModal" @on-cancel="cancelRecord" class-name="vertical-center-modal">
         <p slot="header">
           <span v-if="recordModalType === 'add'">新增</span>
           <span v-if="recordModalType === 'edit'">修改</span>
@@ -185,6 +185,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 
 </style>

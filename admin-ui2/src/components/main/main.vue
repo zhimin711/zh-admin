@@ -124,7 +124,7 @@ export default {
         window.open(name.split('_')[1])
         return
       }
-      if(this.$route.name === route.name) {
+      if (this.$route.name === route.name) {
         return
       }
       this.$router.push({
