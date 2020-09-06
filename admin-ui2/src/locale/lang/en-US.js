@@ -44,6 +44,11 @@ export default {
   drag_drawer_page: 'Draggable Drawer',
   tree_select_page: 'Tree Selector',
   lazyload_page: 'Image Lazyload',
+
+  searchText: 'Search',
+  addText: 'Create',
+  editText: 'Edit',
+
   upms: 'System Manager',
   upms_user: 'User Manager',
   user_model_title: 'User Manager',

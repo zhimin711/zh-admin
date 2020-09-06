@@ -1,40 +1,46 @@
 <template>
   <div>
     <Card>
-      <Form ref="formInline" :model="query1.params" inline :label-width="80">
-        <FormItem prop="username" label="用户名">
-          <Input type="text" v-model="query1.params.username" placeholder="用户名">
+      <Form ref="formInline" :model="pq.params" inline :label-width="80">
+        <FormItem prop="code" label="代码">
+          <Input type="text" v-model="pq.params.code" placeholder="代码">
           </Input>
         </FormItem>
-        <FormItem prop="name" label="用户名称">
-          <Input type="text" v-model="query1.params.name" placeholder="名称">
+        <FormItem prop="name" label="名称">
+          <Input type="text" v-model="pq.params.name" placeholder="名称">
           </Input>
         </FormItem>
       </Form>
-      <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch">查询</Button>
-      <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">新增</Button>
-      <Table ref="tables" :data="tableData" :columns="columns">
+      <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch" :loading="loading">{{ $t('searchText') }}</Button>
+      <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
+      <Table ref="tables" :data="tableData" :columns="columns" :loading="loading">
         <template slot-scope="{ row, index }" slot="action">
           <ButtonGroup size="small">
             <Button icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
-            <Button icon="ios-remove" @click="handleDelete(row,index)">删除</Button>
+            <Button icon="ios-close" @click="handleDelete(row,index)">删除</Button>
           </ButtonGroup>
         </template>
       </Table>
-      <Page :total="tablePager.total" show-sizer show-elevator show-total />
+      <Page :total="pq.total" :current.sync="pq.page" @on-change="handlePage" @on-page-size-change="handleSize" show-sizer show-elevator show-total />
 
       <Modal v-model="recordModal" @on-cancel="cancelRecord">
         <p slot="header">
-          用户
           <span v-if="recordModalType === 'add'">新增</span>
           <span v-if="recordModalType === 'edit'">修改</span>
+          <span>&nbsp;角色</span>
         </p>
         <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">
           <FormItem label="代码" prop="code" required>
-            <i-input type="text" v-model="record.code" :disabled="codeDisabled"></i-input>
+            <i-input type="text" v-model="record.code" :disabled="disabledProps.code"></i-input>
           </FormItem>
           <FormItem label="名称" prop="name" required>
             <i-input type="text" v-model="record.name"></i-input>
+          </FormItem>
+          <FormItem label="状态" prop="status">
+            <i-switch size="large" v-model="recordStatus">
+              <span slot="open">开启</span>
+              <span slot="close">关闭</span>
+            </i-switch>
           </FormItem>
         </Form>
         <div slot="footer">
@@ -66,11 +72,12 @@
 
 <script>
 import Tables from '_c/tables'
-import { getPageRole } from '@/api/upms/role'
+import { getPageRole, addRole, editRole } from '@/api/upms/role'
 
 const defaultRecord = {
   code: '',
-  name: ''
+  name: '',
+  status: '1'
 }
 export default {
   name: 'UpmsRole',
@@ -80,15 +87,6 @@ export default {
   data () {
     return {
       loading: false,
-      recordModal: false,
-      recordModalType: 'add',
-      codeDisabled: false,
-      record: {
-        username: '',
-        password: ''
-      },
-      recordRules: {},
-      roleModal: false,
       columns: [
         { title: '代码', key: 'code' },
         { title: '名称', key: 'name' },
@@ -101,32 +99,49 @@ export default {
           align: 'center'
         }
       ],
-      query1: {
+      pq: {
+        params: {},
         page: 1,
-        pageSize: 10,
-        params: {}
+        size: 10,
+        total: 0
       },
       tableData: [],
-      tablePager: {
-        total: 0
-      }
+      recordModal: false,
+      recordModalType: 'add',
+      disabledProps: {
+        code: false
+      },
+      record: {},
+      recordRules: {},
+      recordStatus: false
     }
   },
   methods: {
     handleSearch () {
+      this.pq.page = 1
+      this.getPage()
+    },
+    handlePage (val) {
+      this.pq.page = val
+      this.getPage()
+    },
+    handleSize (val) {
+      this.pq.size = val
       this.getPage()
     },
     handleAdd () {
       this.recordModal = true
       this.recordModalType = 'add'
-      this.codeDisabled = false
+      this.disabledProps.code = false
       this.record = Object.assign({}, defaultRecord)
+      this.recordStatus = this.record.status === '1'
     },
     handleEdit (row) {
       this.recordModal = true
       this.recordModalType = 'edit'
-      this.codeDisabled = true
+      this.disabledProps.code = true
       this.record = Object.assign({}, row)
+      this.recordStatus = this.record.status === '1'
     },
     handleDelete (params) {
       console.log(params)
@@ -135,18 +150,37 @@ export default {
       this.recordModal = false
       this.$refs.recordForm.resetFields()
     },
-    handleSubmit () {
-      console.log(this.record)
+    async handleSubmit () {
+      let resp
+      let op = ''
+      this.record.status = this.recordStatus ? '1' : '0'
+
+      this.loading = true
+      if (this.recordModalType === 'add') {
+        op = '新增'
+        resp = await addRole(this.record).finally(() => { this.loading = false })
+      } else if (this.recordModalType === 'edit') {
+        op = '修改'
+        resp = await editRole(this.record).finally(() => { this.loading = false })
+      }
+      if (resp && resp.data && resp.data.success) {
+        this.$Message.success(`${op}角色 [${this.record.name}] 成功！`)
+        this.cancelRecord()
+        this.handleSearch()
+      } else {
+        this.$Message.error(`${op}角色 [${this.record.name}] 失败！`)
+      }
     },
     getPage () {
-      getPageRole(this.query1).then(res => {
+      this.loading = true
+      getPageRole(this.pq).then(res => {
         this.tableData = res.data.rows
-        this.tablePager.total = res.data.total
-      })
+        this.pq.total = res.data.total
+      }).finally(() => { this.loading = false })
     }
   },
   mounted () {
-    this.getPage()
+    this.handleSearch()
   }
 }
 </script>

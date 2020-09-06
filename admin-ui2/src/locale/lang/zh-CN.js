@@ -44,6 +44,11 @@ export default {
   drag_drawer_page: '可拖动抽屉',
   tree_select_page: '树状下拉选择器',
   lazyload_page: '图片懒加载',
+
+  searchText: '查询',
+  addText: '新增',
+  editText: '编辑',
+
   upms: '系统管理',
   upms_user: '用户管理',
   user_model_title: '用户管理',

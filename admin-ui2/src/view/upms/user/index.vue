@@ -23,18 +23,18 @@
       </Table>
       <Page :total="tablePager.total" show-sizer show-elevator show-total />
 
-      <Modal v-model="userModal" @on-cancel="cancelRecord">
+      <Modal v-model="recordModal" @on-cancel="cancelRecord">
         <p slot="header">
-          用户
-          <span v-if="userModalType === 'add'">新增</span>
-          <span v-if="userModalType === 'edit'">修改</span>
+          <span>用户</span>
+          <span v-if="recordModalType === 'add'">新增</span>
+          <span v-if="recordModalType === 'edit'">修改</span>
         </p>
         <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">
           <FormItem label="账号" prop="userId" required>
-            <i-input type="text" v-model="record.userId" :disabled="usernameDisabled"></i-input>
+            <i-input type="text" v-model="record.userId" :disabled="disabledProps.code"></i-input>
           </FormItem>
           <FormItem label="用户名" prop="username" required>
-            <i-input type="text" v-model="record.username" :disabled="usernameDisabled"></i-input>
+            <i-input type="text" v-model="record.username" :disabled="disabledProps.code"></i-input>
           </FormItem>
           <FormItem label="新密码" prop="password" required>
             <i-input type="password" v-model="record.password"></i-input>
@@ -88,13 +88,15 @@ export default {
       loading: false,
       recordModal: false,
       recordModalType: 'add',
-      codeDisabled: false,
+      disabledProps: {
+        code: false,
+        username: false
+      },
       record: {
         username: '',
         password: ''
       },
       recordRules: {},
-      roleModal: false,
       columns: [
         { title: '用户账号', key: 'userId' },
         { title: '用户名', key: 'username' },
@@ -125,22 +127,22 @@ export default {
       this.getPageUser()
     },
     handleAdd () {
-      this.userModal = true
-      this.userModalType = 'add'
-      this.usernameDisabled = false
+      this.recordModal = true
+      this.recordModalType = 'add'
+      this.disabledProps.code = false
       this.record = Object.assign({}, defaultR)
     },
     handleEdit (row) {
-      this.userModal = true
-      this.userModalType = 'edit'
-      this.usernameDisabled = true
+      this.recordModal = true
+      this.recordModalType = 'edit'
+      this.disabledProps.code = true
       this.record = Object.assign({}, row)
     },
     handleDelete (params) {
       console.log(params)
     },
     cancelRecord () {
-      this.userModal = false
+      this.recordModal = false
       this.$refs.recordForm.resetFields()
     },
     getPageUser () {
