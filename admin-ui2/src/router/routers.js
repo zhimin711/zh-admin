@@ -403,7 +403,7 @@ export default [
         path: 'level_2_2',
         name: 'level_2_2',
         meta: {
-          access: ['super_admin'],
+          // access: ['super_admin'],
           icon: 'md-funnel',
           showAlways: true,
           title: '二级-2'
@@ -467,6 +467,15 @@ export default [
           title: '角色管理'
         },
         component: () => import('@/view/upms/role/index.vue')
+      },
+      {
+        path: 'permission',
+        name: 'upms_permission',
+        meta: {
+          icon: 'md-lock',
+          title: '权限管理'
+        },
+        component: () => import('@/view/upms/permission/index.vue')
       }
     ]
   },
