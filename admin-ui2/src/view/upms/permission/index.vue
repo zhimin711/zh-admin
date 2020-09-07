@@ -25,16 +25,32 @@
 
       <Modal v-model="recordModal" @on-cancel="cancelRecord" class-name="vertical-center-modal">
         <p slot="header">
-          <span v-if="recordModalType === 'add'">新增</span>
-          <span v-if="recordModalType === 'edit'">修改</span>
-          <span>&nbsp;角色</span>
+          <span v-if="recordModalType === 'add'">{{ $t('addText') }}</span>
+          <span v-if="recordModalType === 'edit'">{{ $t('editText') }}</span>
+          <span>&nbsp;权限</span>
         </p>
         <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">
+          <FormItem label="类型" prop="type">
+            <RadioGroup v-model="record.type" type="button">
+              <Radio label="C">目录</Radio>
+              <Radio label="M">菜单</Radio>
+              <Radio label="B">按钮</Radio>
+            </RadioGroup>
+          </FormItem>
           <FormItem label="代码" prop="code" required>
             <i-input type="text" v-model="record.code" :disabled="disabledProps.code"></i-input>
           </FormItem>
           <FormItem label="名称" prop="name" required>
             <i-input type="text" v-model="record.name"></i-input>
+          </FormItem>
+          <FormItem label="地址" prop="url">
+            <i-input type="text" v-model="record.url"></i-input>
+          </FormItem>
+          <FormItem label="图标" prop="icon">
+            <i-input type="text" v-model="record.icon"></i-input>
+          </FormItem>
+          <FormItem label="序号" prop="sort">
+            <InputNumber :max="1000" :min="1" v-model="record.sort"></InputNumber>
           </FormItem>
           <FormItem label="状态" prop="status">
             <i-switch size="large" v-model="recordStatus">
@@ -75,8 +91,10 @@ import Tables from '_c/tables'
 import { getPagePermission, addPermission, editPermission } from '@/api/upms/permission'
 
 const defaultRecord = {
+  type: 'C',
   code: '',
   name: '',
+  sort: 1,
   status: '1'
 }
 export default {
@@ -164,11 +182,11 @@ export default {
         resp = await editPermission(this.record).finally(() => { this.loading = false })
       }
       if (resp && resp.data && resp.data.success) {
-        this.$Message.success(`${op}角色 [${this.record.name}] 成功！`)
+        this.$Message.success(`${op}权限 [${this.record.name}] 成功！`)
         this.cancelRecord()
         this.handleSearch()
       } else {
-        this.$Message.error(`${op}角色 [${this.record.name}] 失败！`)
+        this.$Message.error(`${op}权限 [${this.record.name}] 失败！`)
       }
     },
     getPage () {
