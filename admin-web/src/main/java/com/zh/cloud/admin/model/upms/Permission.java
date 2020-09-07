@@ -27,7 +27,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "st_permission")
+@Table(name = "st_menu")
 @ApiModel(value="Permission对象", description="后台权限表")
 public class Permission extends Model {
 
@@ -48,20 +48,26 @@ public class Permission extends Model {
     @Id
     private Long id;
 
-    @ApiModelProperty(value = "类型(1.目录 2.菜单页 3.按钮)")
-    private String type;
+    @ApiModelProperty(value = "上级菜单ID")
+    private String parentId;
 
-    @ApiModelProperty(value = "名称")
-    private String name;
+    @ApiModelProperty(value = "上级菜单名称")
+    private String parentName;
+
+    @ApiModelProperty(value = "类型: C.目录 M.菜单 B.按钮)")
+    private String type;
 
     @ApiModelProperty(value = "代码")
     private String code;
 
+    @ApiModelProperty(value = "名称")
+    private String name;
+
     @ApiModelProperty(value = "链接地址")
     private String url;
 
-    @ApiModelProperty(value = "转发地址")
-    private String redirect;
+//    @ApiModelProperty(value = "转发地址")
+//    private String redirect;
 
     @ApiModelProperty(value = "图标")
     private String icon;
@@ -69,19 +75,14 @@ public class Permission extends Model {
     @ApiModelProperty(value = "菜单顺序")
     private Integer sort;
 
-    @ApiModelProperty(value = "是否隐藏(0.否 1.是)")
-    private Boolean hidden;
+//    @ApiModelProperty(value = "是否隐藏(0.否 1.是)")
+//    private Boolean hidden;
 
-    @ApiModelProperty(value = "是否为系统权限(0.否 1.是)")
-    private Boolean isSys;
+//    @ApiModelProperty(value = "是否为系统权限(0.否 1.是)")
+//    private Boolean isSys;
 
-    @ApiModelProperty(value = "上级菜单ID")
-    private String parentId;
-
-    private String parentName;
-
-    @ApiModelProperty(value = "请求方法")
-    private String method;
+//    @ApiModelProperty(value = "请求方法")
+//    private String method;
 
     @ApiModelProperty(value = "状态: 0.禁用 1.启用")
     private String status;
