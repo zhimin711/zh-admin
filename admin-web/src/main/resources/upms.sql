@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS `st_menu`;
 CREATE TABLE `st_menu` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `PARENT_ID` varchar(80) DEFAULT NULL COMMENT '上级菜单ID',
-  `PARENT_NAME` varchar(80) DEFAULT NULL COMMENT '上级菜单ID',
+  `PARENT_NAME` varchar(180) DEFAULT NULL COMMENT '上级菜单ID',
   `NAME` varchar(32) NOT NULL COMMENT '菜单名称',
   `CODE` varchar(64) NOT NULL COMMENT '菜单代码',
   `ICON` varchar(64) DEFAULT NULL COMMENT '图标代码',

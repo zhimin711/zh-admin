@@ -49,7 +49,7 @@
             </RadioGroup>
           </FormItem>
           <FormItem label="上级" prop="parentId">
-            <Cascader :data="options.parent" v-model="values.parent"></Cascader>
+            <Cascader :data="options.parent" v-model="values.parent" :render-format="parentFormat"></Cascader>
           </FormItem>
           <FormItem label="代码" prop="code" required>
             <i-input type="text" v-model="record.code" :disabled="disabledProps.code"></i-input>
@@ -118,11 +118,11 @@ export default {
       columns: [
         { title: '代码', key: 'code' },
         { title: '名称', key: 'name' },
-        { title: '创建时间', key: 'createAt' },
+        // { title: '创建时间', key: 'createAt' },
+        { title: '路由或地址', key: 'url' },
         {
           title: '操作',
           key: 'actions',
-          fixed: 'right',
           width: 200,
           align: 'center',
           type: 'template',
@@ -148,7 +148,8 @@ export default {
         parent: []
       },
       values: {
-        parent: []
+        parent: [],
+        label: []
       }
     }
   },
@@ -210,8 +211,10 @@ export default {
 
       if (this.values.parent.length > 0) {
         this.record.parentId = this.values.parent.join(',')
+        this.record.parentName = this.values.label.join(',')
       } else {
         this.record.parentId = undefined
+        this.record.parentName = undefined
       }
 
       this.loading = true
@@ -241,6 +244,10 @@ export default {
           this.options.parent = res.data.rows
         }
       }).finally(() => { this.loading = false })
+    },
+    parentFormat (label) {
+      this.values.label = label
+      return label.join('/')
     },
     getPage () {
       this.loading = true
