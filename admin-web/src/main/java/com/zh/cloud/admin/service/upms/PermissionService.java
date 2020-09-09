@@ -1,7 +1,10 @@
 package com.zh.cloud.admin.service.upms;
 
+import com.ch.Status;
 import com.ch.result.InvokerPage;
 import com.zh.cloud.admin.model.upms.Permission;
+
+import java.util.List;
 
 /**
  *
@@ -17,4 +20,11 @@ public interface PermissionService {
     Permission find(Long id);
 
     void delete(Long id);
+
+    /**
+     * A C M B
+     * @param type 类型
+     * @return tree
+     */
+    List<Permission> findTreeByTypeAndStatus(String type, Status status);
 }

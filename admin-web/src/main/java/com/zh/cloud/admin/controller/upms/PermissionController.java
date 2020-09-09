@@ -1,15 +1,23 @@
 package com.zh.cloud.admin.controller.upms;
 
 import com.ch.Constants;
+import com.ch.NumS;
+import com.ch.Status;
+import com.ch.pojo.VueRecord;
 import com.ch.result.InvokerPage;
 import com.ch.result.PageResult;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
 import com.ch.utils.CommonUtils;
+import com.zh.cloud.admin.et.PermissionType;
 import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.service.upms.PermissionService;
+import com.zh.cloud.admin.utils.VueRecordUtils;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 权限管理控制层
@@ -35,9 +43,9 @@ public class PermissionController {
      */
     @GetMapping(value = {"/{num:[0-9]+}/{size:[0-9]+}"})
     public Result<Permission> page(Permission record,
-                             @PathVariable(value = "num") int pageNum,
-                             @PathVariable(value = "size") int pageSize,
-                             @PathVariable String env) {
+                                   @PathVariable(value = "num") int pageNum,
+                                   @PathVariable(value = "size") int pageSize,
+                                   @PathVariable String env) {
         InvokerPage.Page<Permission> page = permissionService.findPage(record, pageNum, pageSize);
         return PageResult.success(page);
     }
@@ -64,8 +72,14 @@ public class PermissionController {
     @PostMapping(value = "")
     public Result<String> add(@RequestBody Permission record, @PathVariable String env) {
         return ResultUtils.wrapFail(() -> {
-            if (CommonUtils.isNotEmpty(record.getCode())) {
-                record.setCode(record.getCode().toUpperCase());
+//            if (PermissionType.isCatalog(record.getType()) && CommonUtils.isNotEmpty(record.getCode())) {
+//                record.setCode(record.getCode().toUpperCase());
+//            }
+            if (CommonUtils.isEmpty(record.getParentId())) {
+                record.setParentId(NumS._0);
+            }
+            if (CommonUtils.isEmpty(record.getStatus())) {
+                record.setStatus(Constants.ENABLED);
             }
 //            record.setType(Constants.ENABLED);
             permissionService.save(record);
@@ -99,6 +113,16 @@ public class PermissionController {
         return ResultUtils.wrapFail(() -> {
             permissionService.delete(id);
             return "";
+        });
+    }
+
+
+    @ApiOperation(value = "获取权限树", notes = "a.全部 b.按钮 c.目录 m.菜单 (不区分大小写)")
+    @GetMapping({"/t/{type}"})
+    public Result<VueRecord> tree(@PathVariable String type) {
+        return ResultUtils.wrapList(() -> {
+            List<Permission> records = permissionService.findTreeByTypeAndStatus(type, Status.ALL);
+            return VueRecordUtils.convertParentsByType(records, type);
         });
     }
 }

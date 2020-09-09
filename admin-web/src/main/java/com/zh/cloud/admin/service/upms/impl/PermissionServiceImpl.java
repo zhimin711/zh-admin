@@ -1,11 +1,15 @@
 package com.zh.cloud.admin.service.upms.impl;
 
 import com.ch.Constants;
+import com.ch.NumS;
+import com.ch.Status;
 import com.ch.result.InvokerPage;
 import com.ch.result.ResultUtils;
 import com.ch.utils.CommonUtils;
 import com.ch.utils.SQLUtils;
 import com.ch.utils.StringExtUtils;
+import com.google.common.collect.Lists;
+import com.zh.cloud.admin.et.PermissionType;
 import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.service.upms.PermissionService;
 import com.zh.cloud.admin.utils.QueryUtils;
@@ -60,6 +64,26 @@ public class PermissionServiceImpl implements PermissionService {
         Permission.find.deleteById(id);
     }
 
+    @Override
+    public List<Permission> findTreeByTypeAndStatus(String type, Status status) {
+        Query<Permission> query = Permission.find.query();
+        query.where().eq("parentId", NumS._0)
+                .eq("type", PermissionType.CATALOG.getCode());
+        if (status == Status.ENABLED) {
+            query.where().eq("status", Constants.ENABLED);
+        }
+        List<Permission> records = query.order().asc("sort").findList();
+        if (records.isEmpty()) {
+            return Lists.newArrayList();
+        }
+        PermissionType t1 = PermissionType.from(type);
+        records.forEach(r -> {
+            List<Permission> children = findChildrenByPidAndStatusAndType(r.getId().toString(), status, t1);
+            r.setChildren(children);
+        });
+        return records;
+    }
+
     private Query<Permission> getBaseQuery(Permission record) {
         Query<Permission> query = Permission.find.query();
         QueryUtils.eq(query, record);
@@ -76,6 +100,37 @@ public class PermissionServiceImpl implements PermissionService {
             r.setChildren(subMap.get(pid2));
             if (r.getChildren() != null) r.getChildren().sort(Comparator.comparing(Permission::getSort));
         });
+    }
+
+    private List<Permission> findChildrenByPidAndStatusAndType(String pid, Status status, PermissionType type) {
+        if (CommonUtils.isEmpty(pid)) {
+            return Lists.newArrayList();
+        }
+
+        Query<Permission> query = Permission.find.query();
+        query.where().eq("parentId", pid);
+
+        if (status == Status.ENABLED) {
+            query.where().eq("status", Constants.ENABLED);
+        }
+        if (type == PermissionType.CATALOG) {
+            query.where().eq("type", type.getCode());
+        } else if (type == PermissionType.MENU) {
+            query.where().in("type", PermissionType.getCatalogMenuCodes());
+        }
+        query.order().asc("sort").order().asc("id");
+        List<Permission> children = query.findList();
+        if (CommonUtils.isEmpty(children)) return Lists.newArrayList();
+        children.forEach(r -> {
+            String pid1 = StringExtUtils.linkStr(",", "0".equals(r.getParentId()) ? "" : r.getParentId(), r.getId().toString());
+            PermissionType t2 = PermissionType.from(r.getType());
+            if (type == PermissionType.ALL
+                    || t2 == PermissionType.CATALOG
+                    || (type == PermissionType.BUTTON && t2 != PermissionType.BUTTON)) {
+                r.setChildren(findChildrenByPidAndStatusAndType(pid1, status, type));
+            }
+        });
+        return children;
     }
 
 
