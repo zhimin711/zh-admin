@@ -50,8 +50,9 @@ export default {
   editText: 'Edit',
 
   upms: 'System Manager',
-  upms_user: 'User Manager',
-  user_model_title: 'User Manager',
-  upms_role: 'Role Manager',
-  upms_permission: 'Permission Manager'
+  upmsUser: 'User Manager',
+  upmsRole: 'Role Manager',
+  upmsPermission: 'Permission Manager',
+
+  user_model_title: 'User Manager'
 }

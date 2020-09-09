@@ -50,8 +50,8 @@ export default {
   editText: '编辑',
 
   upms: '系统管理',
-  upms_user: '用户管理',
+  upmsUser: '用户管理',
   user_model_title: '用户管理',
-  upms_role: '角色管理',
-  upms_permission: '权限管理'
+  upmsRole: '角色管理',
+  upmsPermission: '权限管理'
 }

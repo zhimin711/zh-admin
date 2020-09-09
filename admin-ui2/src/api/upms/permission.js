@@ -9,6 +9,12 @@ export const getPagePermission = (query) => {
     params: query.params
   })
 }
+export const getParentPermission = (query) => {
+  return axios.request({
+    url: `${namespace}/t/${query}`,
+    method: 'get'
+  })
+}
 
 export const addPermission = info => {
   return axios.request({

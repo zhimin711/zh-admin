@@ -13,14 +13,25 @@
       </Form>
       <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch" :loading="loading">{{ $t('searchText') }}</Button>
       <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
-      <tree-table ref="tables" expand-key="code" :expand-type="false" :selectable="false" :data="tableData" :columns="columns" :loading="loading">
-        <template slot-scope="{ row, index }" slot="action">
+      <TreeTable
+        ref="tables"
+        expand-key="code"
+        :expand-type="false"
+        :selectable="false"
+        :data="tableData"
+        :columns="columns"
+        :loading="loading"
+        @row-click="handleClick"
+        @row-dblclick="handleClick"
+      >
+        <template slot="actions" slot-scope="{ row, index }">
           <ButtonGroup size="small">
             <Button icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
+            <Button icon="ios-copy-outline" @click="handleEdit(row, index, 'copy')">复制</Button>
             <Button icon="ios-close" @click="handleDelete(row,index)">删除</Button>
           </ButtonGroup>
         </template>
-      </tree-table>
+      </TreeTable>
       <Page :total="pq.total" :current.sync="pq.page" @on-change="handlePage" @on-page-size-change="handleSize" show-sizer show-elevator show-total />
 
       <Modal v-model="recordModal" @on-cancel="cancelRecord" class-name="vertical-center-modal">
@@ -31,11 +42,14 @@
         </p>
         <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">
           <FormItem label="类型" prop="type">
-            <RadioGroup v-model="record.type" type="button">
+            <RadioGroup v-model="record.type" type="button" @on-change="getParents">
               <Radio label="C">目录</Radio>
               <Radio label="M">菜单</Radio>
               <Radio label="B">按钮</Radio>
             </RadioGroup>
+          </FormItem>
+          <FormItem label="上级" prop="parentId">
+            <Cascader :data="options.parent" v-model="values.parent"></Cascader>
           </FormItem>
           <FormItem label="代码" prop="code" required>
             <i-input type="text" v-model="record.code" :disabled="disabledProps.code"></i-input>
@@ -87,8 +101,7 @@
 </template>
 
 <script>
-import Tables from '_c/tables'
-import { getPagePermission, addPermission, editPermission } from '@/api/upms/permission'
+import { getPagePermission, addPermission, editPermission, getParentPermission } from '@/api/upms/permission'
 
 const defaultRecord = {
   type: 'C',
@@ -98,10 +111,7 @@ const defaultRecord = {
   status: '1'
 }
 export default {
-  name: 'UpmsPermission',
-  components: {
-    Tables
-  },
+  name: 'upmsPermission',
   data () {
     return {
       loading: false,
@@ -111,10 +121,12 @@ export default {
         { title: '创建时间', key: 'createAt' },
         {
           title: '操作',
-          slot: 'action',
+          key: 'actions',
           fixed: 'right',
-          width: 160,
-          align: 'center'
+          width: 200,
+          align: 'center',
+          type: 'template',
+          template: 'actions'
         }
       ],
       pq: {
@@ -131,7 +143,13 @@ export default {
       },
       record: {},
       recordRules: {},
-      recordStatus: false
+      recordStatus: false,
+      options: {
+        parent: []
+      },
+      values: {
+        parent: []
+      }
     }
   },
   methods: {
@@ -153,15 +171,32 @@ export default {
       this.disabledProps.code = false
       this.record = Object.assign({}, defaultRecord)
       this.recordStatus = this.record.status === '1'
+      this.getParents()
     },
-    handleEdit (row) {
+    handleEdit (row, index, op) {
       this.recordModal = true
       this.recordModalType = 'edit'
       this.disabledProps.code = true
       this.record = Object.assign({}, row)
+
+      if (op && op === 'copy') {
+        this.recordModalType = 'add'
+        this.disabledProps.code = false
+        this.record.id = undefined
+        this.record.sort += 1
+      }
+
       this.recordStatus = this.record.status === '1'
+      this.getParents(row.type)
+      this.values.parent = []
+      if (row.parentId !== '0') {
+        this.values.parent = row.parentId.split(',')
+      }
     },
     handleDelete (params) {
+      console.log(params)
+    },
+    handleClick (params) {
       console.log(params)
     },
     cancelRecord () {
@@ -172,6 +207,12 @@ export default {
       let resp
       let op = ''
       this.record.status = this.recordStatus ? '1' : '0'
+
+      if (this.values.parent.length > 0) {
+        this.record.parentId = this.values.parent.join(',')
+      } else {
+        this.record.parentId = undefined
+      }
 
       this.loading = true
       if (this.recordModalType === 'add') {
@@ -188,6 +229,18 @@ export default {
       } else {
         this.$Message.error(`${op}权限 [${this.record.name}] 失败！`)
       }
+    },
+    getParents (type) {
+      let t = 'c'
+      if (type === 'B') {
+        t = 'm'
+      }
+      this.loading = true
+      getParentPermission(t).then(res => {
+        if (res.data.success) {
+          this.options.parent = res.data.rows
+        }
+      }).finally(() => { this.loading = false })
     },
     getPage () {
       this.loading = true

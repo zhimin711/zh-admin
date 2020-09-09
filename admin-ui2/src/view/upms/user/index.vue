@@ -79,7 +79,7 @@ const defaultR = {
   password: ''
 }
 export default {
-  name: 'UpmsUser',
+  name: 'upmsUser',
   components: {
     Tables
   },

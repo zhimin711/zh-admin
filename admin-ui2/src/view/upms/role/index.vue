@@ -80,7 +80,7 @@ const defaultRecord = {
   status: '1'
 }
 export default {
-  name: 'UpmsRole',
+  name: 'upmsRole',
   components: {
     Tables
   },

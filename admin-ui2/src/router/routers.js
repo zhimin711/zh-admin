@@ -452,7 +452,7 @@ export default [
     children: [
       {
         path: 'user',
-        name: 'upms_user',
+        name: 'upmsUser',
         meta: {
           icon: 'md-person',
           title: '用户管理'
@@ -461,7 +461,7 @@ export default [
       },
       {
         path: 'role',
-        name: 'upms_role',
+        name: 'upmsRole',
         meta: {
           icon: 'md-people',
           title: '角色管理'
@@ -470,7 +470,7 @@ export default [
       },
       {
         path: 'permission',
-        name: 'upms_permission',
+        name: 'upmsPermission',
         meta: {
           icon: 'md-lock',
           title: '权限管理'
