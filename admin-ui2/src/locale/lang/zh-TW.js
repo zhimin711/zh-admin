@@ -51,7 +51,9 @@ export default {
 
   upms: '系统管理',
   upmsUser: '用户管理',
-  user_model_title: '用户管理',
   upmsRole: '角色管理',
-  upmsPermission: '权限管理'
+  upmsPermission: '权限管理',
+  upmsDepartment: '部门管理',
+
+  user_model_title: '用户管理'
 }

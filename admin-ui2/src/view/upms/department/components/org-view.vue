@@ -9,7 +9,6 @@
       <v-org-tree
         v-if="data"
         :data="data"
-        :props="{ id: 'value', label: 'label', children: 'children'}"
         :node-render="nodeRender"
         :expand-all="true"
         @on-node-click="handleNodeClick"

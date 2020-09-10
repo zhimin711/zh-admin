@@ -476,6 +476,15 @@ export default [
           title: '权限管理'
         },
         component: () => import('@/view/upms/permission/index.vue')
+      },
+      {
+        path: 'department',
+        name: 'upmsDepartment',
+        meta: {
+          icon: 'md-lock',
+          title: '部门管理'
+        },
+        component: () => import('@/view/upms/department/index.vue')
       }
     ]
   },

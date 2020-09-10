@@ -53,6 +53,7 @@ export default {
   upmsUser: 'User Manager',
   upmsRole: 'Role Manager',
   upmsPermission: 'Permission Manager',
+  upmsDepartment: 'Department Manager',
 
   user_model_title: 'User Manager'
 }
