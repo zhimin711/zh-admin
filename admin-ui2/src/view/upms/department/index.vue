@@ -164,6 +164,7 @@ export default {
       let op = ''
       this.record.status = this.recordStatus ? '1' : '0'
 
+      this.record.pid = lastPid || 0
       if (this.values.parent.length > 0) {
         this.record.parentId = this.values.parent.join(',')
         this.record.parentName = this.values.label.join(',')
