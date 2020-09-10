@@ -155,8 +155,11 @@ export default {
       this.$refs.recordForm.resetFields()
     },
     async handleSubmit () {
-
-
+      const lastPid = this.values.parent[this.values.parent.length - 1]
+      if (this.record.id && this.record.id === lastPid) {
+        this.$Message.error('上级不能为自身，请重新选择...')
+        return
+      }
       let resp
       let op = ''
       this.record.status = this.recordStatus ? '1' : '0'
