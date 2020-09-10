@@ -74,7 +74,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             return new KeyValue(record.getId(), record.getName());
         }
         String key = StringExtUtils.linkStr(Constants.SEPARATOR_2, record.getParentId(), record.getId().toString());
-        String name = StringExtUtils.linkStr(Constants.SEPARATOR_2, record.getParentName(), record.getName());
+        String name = StringExtUtils.linkStr(Constants.SEPARATOR_3, record.getParentName(), record.getName());
         return new KeyValue(key, name);
     }
 

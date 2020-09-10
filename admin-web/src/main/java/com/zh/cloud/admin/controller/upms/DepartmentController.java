@@ -117,13 +117,16 @@ public class DepartmentController {
 
 
     @ApiOperation(value = "获取树", notes = "树")
-    @GetMapping({"/t2/"})
-    public Result<?> tree() {
+    @GetMapping({"/t2/{type}"})
+    public Result<?> tree(@PathVariable String type) {
         return ResultUtils.wrapList(() -> {
             List<Department> list = departmentService.findTree(null);
-            List<JSONObject> objList = VueRecordUtils.jsonIdLabelTreeByIdAndName(list);
-            objList.forEach(r -> r.put("isRoot", true));
-            return objList;
+            if("1".equals(type)) {
+                List<JSONObject> objList = VueRecordUtils.jsonIdLabelTreeByIdAndName(list);
+                objList.forEach(r -> r.put("isRoot", true));
+                return objList;
+            }
+            return VueRecordUtils.jsonValueLabelTreeByIdAndName(list);
         });
     }
 }
