@@ -48,6 +48,7 @@ export default {
   searchText: 'Search',
   addText: 'Create',
   editText: 'Edit',
+  refreshText: 'Refresh',
 
   upms: 'System Manager',
   upmsUser: 'User Manager',

@@ -20,6 +20,20 @@
 
 <script>
 import { on, off } from '@/libs/tools'
+const menuRootList = [
+  {
+    key: 'edit',
+    label: '编辑部门'
+  },
+  {
+    key: 'detail',
+    label: '查看部门'
+  },
+  {
+    key: 'new',
+    label: '新增子部门'
+  }
+]
 const menuList = [
   {
     key: 'edit',
@@ -85,6 +99,7 @@ export default {
         : ''
     },
     nodeRender (h, data) {
+      const tempMenuList = data.isRoot ?  menuRootList : menuList
       return (
         <div
           class={[
@@ -108,7 +123,7 @@ export default {
             v-click-outside={this.closeMenu}
           >
             <dropdown-menu slot="list">
-              {menuList.map(item => {
+              {tempMenuList.map(item => {
                 return (
                   <dropdown-item name={item.key}>{item.label}</dropdown-item>
                 )

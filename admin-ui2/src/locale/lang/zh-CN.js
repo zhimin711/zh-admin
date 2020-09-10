@@ -48,6 +48,7 @@ export default {
   searchText: '查询',
   addText: '新增',
   editText: '编辑',
+  refreshText: '刷新',
 
   upms: '系统管理',
   upmsUser: '用户管理',

@@ -2,10 +2,16 @@ import axios from '@/libs/api.request2'
 
 const namespace = 'department'
 
-
 export const getTreeDepartment = (query) => {
   return axios.request({
     url: `${namespace}/t2/`,
+    method: 'get'
+  })
+}
+
+export const getDepartment = (query) => {
+  return axios.request({
+    url: `${namespace}/${query}`,
     method: 'get'
   })
 }
