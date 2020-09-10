@@ -1,5 +1,6 @@
 package com.zh.cloud.admin.service.upms;
 
+import com.ch.pojo.KeyValue;
 import com.zh.cloud.admin.model.upms.Department;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface DepartmentService {
 
     List<Department> findTree(Department record);
 
+    KeyValue findParentKV(Long pid);
 }

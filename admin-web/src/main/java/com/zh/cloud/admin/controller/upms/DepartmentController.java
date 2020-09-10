@@ -1,10 +1,14 @@
 package com.zh.cloud.admin.controller.upms;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ch.Constants;
+import com.ch.e.PubError;
+import com.ch.pojo.KeyValue;
 import com.ch.pojo.VueRecord;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
 import com.ch.utils.CommonUtils;
+import com.ch.utils.ExceptionUtils;
 import com.ch.utils.VueRecordUtils;
 import com.zh.cloud.admin.model.upms.Department;
 import com.zh.cloud.admin.service.upms.DepartmentService;
@@ -35,8 +39,8 @@ public class DepartmentController {
      * @return token
      */
     @GetMapping(value = {"/t/"})
-    public Result<Department> tree(Department record,
-                                   @PathVariable String env) {
+    public Result<?> tree(Department record,
+                          @PathVariable String env) {
         List<Department> list = departmentService.findTree(record);
         return Result.success(list);
     }
@@ -48,8 +52,8 @@ public class DepartmentController {
      * @param id  主键
      * @return 信息
      */
-//    @GetMapping(value = "/{id}")
-    public Result<Department> detail(@PathVariable String env, @PathVariable Long id) {
+    @GetMapping(value = "/{id:[0-9]+}")
+    public Result<?> detail(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> departmentService.find(id));
     }
 
@@ -61,18 +65,24 @@ public class DepartmentController {
      * @return 是否成功
      */
     @PostMapping(value = "")
-    public Result<String> add(@RequestBody Department record, @PathVariable String env) {
+    public Result<?> add(@RequestBody Department record, @PathVariable String env) {
         return ResultUtils.wrapFail(() -> {
-//            if (DepartmentType.isCatalog(record.getType()) && CommonUtils.isNotEmpty(record.getCode())) {
-//                record.setCode(record.getCode().toUpperCase());
-//            }
-            if (CommonUtils.isEmpty(record.getStatus())) {
-                record.setStatus(Constants.ENABLED);
-            }
-//            record.setType(Constants.ENABLED);
+            checkAndFill(record);
             departmentService.save(record);
             return "";
         });
+    }
+
+    private void checkAndFill(Department record) {
+        if (CommonUtils.isEmpty(record.getPid())) {
+            ExceptionUtils._throw(PubError.NON_NULL, "上级ID不能为空！");
+        }
+        KeyValue parentKv = departmentService.findParentKV(record.getPid());
+        record.setParentId(parentKv.getKey());
+        record.setParentName(parentKv.getValue());
+        if (CommonUtils.isEmpty(record.getStatus())) {
+            record.setStatus(Constants.ENABLED);
+        }
     }
 
     /**
@@ -82,9 +92,10 @@ public class DepartmentController {
      * @param env    环境变量
      * @return 是否成功
      */
-//    @PutMapping(value = "/{id}")
-    public Result<String> edit(@RequestBody Department record, @PathVariable String env, @PathVariable Long id) {
+    @PutMapping(value = "/{id:[0-9]+}")
+    public Result<?> edit(@RequestBody Department record, @PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
+            checkAndFill(record);
             departmentService.update(record);
             return "";
         });
@@ -96,8 +107,8 @@ public class DepartmentController {
      * @param env 环境变量
      * @return 是否成功
      */
-    @DeleteMapping(value = "/{id}")
-    public Result<String> delete(@PathVariable String env, @PathVariable Long id) {
+    @DeleteMapping(value = "/{id:[0-9]+}")
+    public Result<?> delete(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
             departmentService.delete(id);
             return "";
@@ -105,12 +116,14 @@ public class DepartmentController {
     }
 
 
-    @ApiOperation(value = "获取权限树", notes = "a.全部 b.按钮 c.目录 m.菜单 (不区分大小写)")
+    @ApiOperation(value = "获取树", notes = "树")
     @GetMapping({"/t2/"})
-    public Result<VueRecord> tree() {
+    public Result<?> tree() {
         return ResultUtils.wrapList(() -> {
             List<Department> list = departmentService.findTree(null);
-            return VueRecordUtils.covertIdTree(list);
+            List<JSONObject> objList = VueRecordUtils.jsonIdLabelTreeByIdAndName(list);
+            objList.forEach(r -> r.put("isRoot", true));
+            return objList;
         });
     }
 }

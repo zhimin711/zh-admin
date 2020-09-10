@@ -49,7 +49,13 @@ public class Department extends Model {
     private Long id;
 
     @ApiModelProperty(value = "上级部门id")
-    private String pid;
+    private Long pid;
+
+    @ApiModelProperty(value = "上级部门id")
+    private String parentId;
+
+    @ApiModelProperty(value = "上级部门名称")
+    private String parentName;
 
     @ApiModelProperty(value = "部门名称")
     private String name;
@@ -86,7 +92,7 @@ public class Department extends Model {
     @ApiModelProperty(value = "更新时间")
     @WhenModified
     private Date updateAt;
-    
+
     @Transient
     List<Department> children;
 
