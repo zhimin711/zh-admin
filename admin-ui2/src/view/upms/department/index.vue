@@ -25,8 +25,8 @@
       </p>
       <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">
         <FormItem label="上级" prop="parentId">
-          <!--<Cascader :data="options.parent" v-model="values.parent" :render-format="parentFormat"></Cascader>-->
-          <i-input type="text" v-model="record.parentName" readonly></i-input>
+          <Cascader :data="options.parent" v-model="values.parent" :render-format="parentFormat" :disabled="disabledProps.parent" change-on-select></Cascader>
+          <!--<i-input type="text" v-model="record.parentName" readonly :disabled="disabledProps.parent"></i-input>-->
         </FormItem>
         <FormItem label="名称" prop="name" required>
           <i-input type="text" v-model="record.name"></i-input>
@@ -92,7 +92,7 @@ export default {
       recordModal: false,
       recordModalType: 'add',
       disabledProps: {
-        code: false
+        parent: false
       },
       record: {},
       recordRules: {},
@@ -117,33 +117,36 @@ export default {
       return data
     },
     handleMenuClick ({ data, key }) {
-      if (key === 'new') {
-        this.handleAdd()
-        this.record.pid = data.id
-        this.record.parentName = data.label
-        return
-      } else if (key === 'delete') {
+      this.disabledProps.parent = data.isRoot || false
+      if (key === 'delete') {
         return
       }
+      this.values.parent = []
+      const sort = data.children ? (data.children.length + 1) : 1
+      const _that = this
       getDepartment(data.id).then(resp => {
         const { data } = resp
-        if (key === 'edit') {
-          this.handleEdit(data.rows[0])
-          // this.record.parentName = data.label
+        const row = data.rows[0]
+        _that.values.parent = row.parentId === '0' ? [] : row.parentId.split(',').map(id => Number(id))
+        if (key === 'new') {
+          _that.handleAdd()
+          _that.record.pid = row.id
+          _that.record.sort = sort
+          _that.values.parent.push((row.id))
+        } else if (key === 'edit') {
+          _that.handleEdit(row)
         }
       })
     },
     handleAdd () {
       this.recordModal = true
       this.recordModalType = 'add'
-      this.disabledProps.code = false
       this.record = Object.assign({}, defaultRecord)
       this.recordStatus = this.record.status === '1'
     },
     handleEdit (row) {
       this.recordModal = true
       this.recordModalType = 'edit'
-      this.disabledProps.code = true
       this.record = Object.assign({}, row)
       this.recordStatus = this.record.status === '1'
     },
@@ -152,6 +155,8 @@ export default {
       this.$refs.recordForm.resetFields()
     },
     async handleSubmit () {
+
+
       let resp
       let op = ''
       this.record.status = this.recordStatus ? '1' : '0'
@@ -176,6 +181,7 @@ export default {
         this.$Message.success(`${op}部门 [${this.record.name}] 成功！`)
         this.cancelRecord()
         this.getDepartmentData()
+        this.getParents()
       } else {
         this.$Message.error(`${op}部门 [${this.record.name}] 失败！`)
       }
@@ -183,8 +189,18 @@ export default {
     getDetail (id) {
       // getDepartment(id)
     },
+    parentFormat (label) {
+      this.values.label = label
+      return label.join('/')
+    },
+    getParents () {
+      getTreeDepartment(2).then(res => {
+        const { data } = res
+        this.options.parent = data.rows
+      })
+    },
     getDepartmentData () {
-      getTreeDepartment().then(res => {
+      getTreeDepartment(1).then(res => {
         const { data } = res
         this.data = data.rows[0]
       })
@@ -192,6 +208,7 @@ export default {
   },
   mounted () {
     this.getDepartmentData()
+    this.getParents()
   }
 }
 </script>

@@ -4,7 +4,7 @@ const namespace = 'department'
 
 export const getTreeDepartment = (query) => {
   return axios.request({
-    url: `${namespace}/t2/`,
+    url: `${namespace}/t2/${query}`,
     method: 'get'
   })
 }

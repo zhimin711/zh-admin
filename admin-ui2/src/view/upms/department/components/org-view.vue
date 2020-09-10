@@ -99,7 +99,7 @@ export default {
         : ''
     },
     nodeRender (h, data) {
-      const tempMenuList = data.isRoot ?  menuRootList : menuList
+      const tempMenuList = data.isRoot ? menuRootList : menuList
       return (
         <div
           class={[
