@@ -77,9 +77,11 @@ public class DepartmentController {
         if (CommonUtils.isEmpty(record.getPid())) {
             ExceptionUtils._throw(PubError.NON_NULL, "上级ID不能为空！");
         }
-        KeyValue parentKv = departmentService.findParentKV(record.getPid());
-        record.setParentId(parentKv.getKey());
-        record.setParentName(parentKv.getValue());
+        if (record.getPid() > 0 && CommonUtils.isEmptyOr(record.getParentId(), record.getParentName())) {
+            KeyValue parentKv = departmentService.findParentKV(record.getPid());
+            record.setParentId(parentKv.getKey());
+            record.setParentName(parentKv.getValue());
+        }
         if (CommonUtils.isEmpty(record.getStatus())) {
             record.setStatus(Constants.ENABLED);
         }
@@ -121,7 +123,7 @@ public class DepartmentController {
     public Result<?> tree(@PathVariable String type) {
         return ResultUtils.wrapList(() -> {
             List<Department> list = departmentService.findTree(null);
-            if("1".equals(type)) {
+            if ("1".equals(type)) {
                 List<JSONObject> objList = VueRecordUtils.jsonIdLabelTreeByIdAndName(list);
                 objList.forEach(r -> r.put("isRoot", true));
                 return objList;
