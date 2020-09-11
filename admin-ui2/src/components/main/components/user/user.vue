@@ -42,6 +42,7 @@ export default {
       })
     },
     message () {
+      if (this.$route.name === 'message_page') return
       this.$router.push({
         name: 'message_page'
       })

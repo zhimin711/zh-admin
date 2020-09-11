@@ -60,25 +60,6 @@ export default [
     }
   },
   {
-    path: '/join',
-    name: 'join',
-    component: Main,
-    meta: {
-      hideInBread: true
-    },
-    children: [
-      {
-        path: 'join_page',
-        name: 'join_page',
-        meta: {
-          icon: '_qq',
-          title: 'QQ群'
-        },
-        component: () => import('@/view/join-page.vue')
-      }
-    ]
-  },
-  {
     path: '/message',
     name: 'message',
     component: Main,

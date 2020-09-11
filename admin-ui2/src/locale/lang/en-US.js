@@ -11,7 +11,6 @@ export default {
   img_cropper_page: 'Image-editor',
   update: 'Update',
   doc: 'Document',
-  join_page: 'QQ Group',
   update_table_page: 'Update .CSV',
   update_paste_page: 'Paste Table Data',
   multilevel: 'multilevel',

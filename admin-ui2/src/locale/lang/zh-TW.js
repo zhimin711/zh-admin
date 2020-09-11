@@ -10,7 +10,6 @@ export default {
   icons_page: '自定義圖標',
   img_cropper_page: '圖片編輯器',
   update: '上傳數據',
-  join_page: 'QQ群',
   doc: '文檔',
   update_table_page: '上傳CSV文件',
   update_paste_page: '粘貼表格數據',
@@ -47,7 +46,7 @@ export default {
 
   searchText: 'Search',
   addText: '新增',
-  editText: '编辑',
+  editText: '編輯',
   refreshText: '刷新',
 
   upms: '系统管理',
