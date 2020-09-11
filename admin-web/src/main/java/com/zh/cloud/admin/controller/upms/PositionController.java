@@ -1,26 +1,29 @@
 package com.zh.cloud.admin.controller.upms;
 
 import com.ch.Constants;
+import com.ch.result.InvokerPage;
+import com.ch.result.PageResult;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
 import com.ch.utils.CommonUtils;
-import com.zh.cloud.admin.model.upms.Role;
-import com.zh.cloud.admin.service.upms.RoleService;
+import com.zh.cloud.admin.model.upms.Position;
+import com.zh.cloud.admin.model.upms.Position;
+import com.zh.cloud.admin.service.upms.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 角色管理控制层
  *
- * @author zhimin.ma 2020-07-13 下午05:12:16
+ * @author zhimin.ma 2020-09-13 下午05:12:16
  * @version 1.0.0
  */
 @RestController
-@RequestMapping("/api/{env}/role")
-public class RoleController {
+@RequestMapping("/api/{env}/position")
+public class PositionController {
 
     @Autowired
-    private RoleService roleService;
+    private PositionService positionService;
 
     /**
      * 分页查询
@@ -32,11 +35,11 @@ public class RoleController {
      * @return token
      */
     @GetMapping(value = {"/{num:[0-9]+}/{size:[0-9]+}"})
-    public Result<?> page(Role record,
-                             @PathVariable(value = "num") int pageNum,
-                             @PathVariable(value = "size") int pageSize,
-                             @PathVariable String env) {
-        return ResultUtils.wrapPage(() -> roleService.findPage(record, pageNum, pageSize));
+    public Result<?> page(Position record,
+                          @PathVariable(value = "num") int pageNum,
+                          @PathVariable(value = "size") int pageSize,
+                          @PathVariable String env) {
+        return ResultUtils.wrapPage(() -> positionService.findPage(record, pageNum, pageSize));
     }
 
     /**
@@ -48,7 +51,7 @@ public class RoleController {
      */
     @GetMapping(value = "/{id}")
     public Result<?> detail(@PathVariable String env, @PathVariable Long id) {
-        return ResultUtils.wrapFail(() -> roleService.find(id));
+        return ResultUtils.wrapFail(() -> positionService.find(id));
     }
 
     /**
@@ -59,13 +62,10 @@ public class RoleController {
      * @return 是否成功
      */
     @PostMapping(value = "")
-    public Result<?> add(@RequestBody Role record, @PathVariable String env) {
+    public Result<?> add(@RequestBody Position record, @PathVariable String env) {
         return ResultUtils.wrapFail(() -> {
-            if (CommonUtils.isNotEmpty(record.getCode())) {
-                record.setCode(record.getCode().toUpperCase());
-            }
-            record.setType(Constants.ENABLED);
-            roleService.save(record);
+            record.setStatus(Constants.ENABLED);
+            positionService.save(record);
             return "";
         });
     }
@@ -78,9 +78,9 @@ public class RoleController {
      * @return 是否成功
      */
     @PutMapping(value = "/{id}")
-    public Result<?> edit(@RequestBody Role record, @PathVariable String env, @PathVariable Long id) {
+    public Result<?> edit(@RequestBody Position record, @PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
-            roleService.update(record);
+            positionService.update(record);
             return "";
         });
     }
@@ -94,7 +94,7 @@ public class RoleController {
     @DeleteMapping(value = "/{id}")
     public Result<?> delete(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
-            roleService.delete(id);
+            positionService.delete(id);
             return "";
         });
     }

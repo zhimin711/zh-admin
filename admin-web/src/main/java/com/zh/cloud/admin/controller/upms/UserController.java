@@ -1,7 +1,7 @@
 package com.zh.cloud.admin.controller.upms;
 
-import com.ch.result.InvokerPage;
-import com.ch.result.PageResult;
+import com.ch.result.Result;
+import com.ch.result.ResultUtils;
 import com.zh.cloud.admin.controller.LoginController;
 import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.upms.User;
@@ -34,12 +34,11 @@ public class UserController {
      * @return token
      */
     @GetMapping(value = {"/{num:[0-9]+}/{size:[0-9]+}"})
-    public PageResult<User> page(User record,
-                                 @PathVariable(value = "num") int pageNum,
-                                 @PathVariable(value = "size") int pageSize,
-                                 @PathVariable String env) {
-        InvokerPage.Page<User> page = userService.findPage(record, pageNum, pageSize);
-        return PageResult.success(page);
+    public Result<?> page(User record,
+                          @PathVariable(value = "num") int pageNum,
+                          @PathVariable(value = "size") int pageSize,
+                          @PathVariable String env) {
+        return ResultUtils.wrapPage(() -> userService.findPage(record, pageNum, pageSize));
     }
 
     /**

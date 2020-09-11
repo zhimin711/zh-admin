@@ -42,12 +42,11 @@ public class PermissionController {
      * @return token
      */
     @GetMapping(value = {"/{num:[0-9]+}/{size:[0-9]+}"})
-    public Result<Permission> page(Permission record,
+    public Result<?> page(Permission record,
                                    @PathVariable(value = "num") int pageNum,
                                    @PathVariable(value = "size") int pageSize,
                                    @PathVariable String env) {
-        InvokerPage.Page<Permission> page = permissionService.findPage(record, pageNum, pageSize);
-        return PageResult.success(page);
+        return ResultUtils.wrapPage(() -> permissionService.findPage(record, pageNum, pageSize));
     }
 
     /**
@@ -70,7 +69,7 @@ public class PermissionController {
      * @return 是否成功
      */
     @PostMapping(value = "")
-    public Result<String> add(@RequestBody Permission record, @PathVariable String env) {
+    public Result<?> add(@RequestBody Permission record, @PathVariable String env) {
         return ResultUtils.wrapFail(() -> {
 //            if (PermissionType.isCatalog(record.getType()) && CommonUtils.isNotEmpty(record.getCode())) {
 //                record.setCode(record.getCode().toUpperCase());
@@ -109,7 +108,7 @@ public class PermissionController {
      * @return 是否成功
      */
     @DeleteMapping(value = "/{id}")
-    public Result<String> delete(@PathVariable String env, @PathVariable Long id) {
+    public Result<?> delete(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
             permissionService.delete(id);
             return "";
@@ -119,7 +118,7 @@ public class PermissionController {
 
     @ApiOperation(value = "获取权限树", notes = "a.全部 b.按钮 c.目录 m.菜单 (不区分大小写)")
     @GetMapping({"/t/{type}"})
-    public Result<VueRecord> tree(@PathVariable String type) {
+    public Result<?> tree(@PathVariable String type) {
         return ResultUtils.wrapList(() -> {
             List<Permission> records = permissionService.findTreeByTypeAndStatus(type, Status.ALL);
             return VueRecordUtils.convertParentsByType(records, type);
