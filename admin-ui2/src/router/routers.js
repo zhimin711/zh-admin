@@ -445,7 +445,7 @@ export default [
     path: '/upms',
     name: 'upms',
     meta: {
-      icon: 'ios-menu',
+      icon: 'ios-settings',
       title: '系统管理'
     },
     component: Main,
@@ -485,6 +485,15 @@ export default [
           title: '部门管理'
         },
         component: () => import('@/view/upms/department/index.vue')
+      },
+      {
+        path: 'position',
+        name: 'upmsPosition',
+        meta: {
+          icon: 'md-pin',
+          title: '职位管理'
+        },
+        component: () => import('@/view/upms/position/index.vue')
       }
     ]
   },

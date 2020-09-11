@@ -172,6 +172,7 @@ export default {
     },
     handleContextMenuClick (data, key) {
       this.$emit('on-menu-click', { data, key })
+      this.closeMenu()
     }
   },
   mounted () {
