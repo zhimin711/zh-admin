@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -58,6 +59,7 @@ public class Permission extends Model {
     private String type;
 
     @ApiModelProperty(value = "代码")
+    @Size(min = 1, max = 100, message = "权限标识长度不能超过100个字符")
     private String code;
 
     @ApiModelProperty(value = "名称")

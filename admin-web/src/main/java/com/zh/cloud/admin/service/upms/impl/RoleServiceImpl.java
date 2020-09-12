@@ -64,7 +64,7 @@ public class RoleServiceImpl implements RoleService {
 
     private Query<Role> getBaseQuery(Role record) {
         Query<Role> query = Role.find.query();
-        QueryUtils.eq(query, record);
+        QueryUtils.likeAny(query, record, "code", "name");
         return query;
     }
 }
