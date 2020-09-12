@@ -48,6 +48,13 @@ export default {
   addText: 'Create',
   editText: 'Edit',
   refreshText: 'Refresh',
+  resetText: 'Reset',
+  enabledText: 'Enabled',
+  disabledText: 'Disabled',
+  allText: 'All',
+  statusText: 'Status',
+  codeText: 'Code',
+  nameText: 'Name',
 
   upms: 'System Manager',
   upmsUser: 'User Manager',

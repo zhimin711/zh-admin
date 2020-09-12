@@ -2,16 +2,24 @@
   <div>
     <Card>
       <Form ref="formInline" :model="pq.params" inline :label-width="80">
-        <FormItem prop="code" label="代码">
-          <Input type="text" v-model="pq.params.code" placeholder="代码">
+        <FormItem prop="code" :label="$t('codeText')">
+          <Input type="text" v-model="pq.params.code" :placeholder="$t('codeText')">
           </Input>
         </FormItem>
-        <FormItem prop="name" label="名称">
-          <Input type="text" v-model="pq.params.name" placeholder="名称">
+        <FormItem prop="name" :label="$t('nameText')">
+          <Input type="text" v-model="pq.params.name" :placeholder="$t('nameText')">
           </Input>
+        </FormItem>
+        <FormItem :label="$t('statusText')">
+          <Select v-model="pq.params.status">
+            <Option value="">{{ $t('allText') }}</Option>
+            <Option value="1">{{ $t('enabledText') }}</Option>
+            <Option value="0">{{ $t('disabledText') }}</Option>
+          </Select>
         </FormItem>
       </Form>
       <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch" :loading="loading">{{ $t('searchText') }}</Button>
+      <Button style="margin: 5px 3px;" icon="md-refresh" @click="pq.params = {}">{{ $t('resetText') }}</Button>
       <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
       <Table ref="tables" :data="tableData" :columns="columns" :loading="loading">
         <template slot-scope="{ row, index }" slot="action">
@@ -25,8 +33,8 @@
 
       <Modal v-model="recordModal" @on-cancel="cancelRecord" class-name="vertical-center-modal">
         <p slot="header">
-          <span v-if="recordModalType === 'add'">新增</span>
-          <span v-if="recordModalType === 'edit'">修改</span>
+          <span v-if="recordModalType === 'add'">{{ $t('addText') }}</span>
+          <span v-if="recordModalType === 'edit'">{{ $t('editText') }}</span>
           <span>&nbsp;角色</span>
         </p>
         <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">

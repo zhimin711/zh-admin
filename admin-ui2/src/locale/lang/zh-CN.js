@@ -48,6 +48,13 @@ export default {
   addText: '新增',
   editText: '编辑',
   refreshText: '刷新',
+  resetText: '重置',
+  enabledText: '启用',
+  disabledText: '禁用',
+  allText: '全部',
+  statusText: '状态',
+  codeText: '代码',
+  nameText: '名称',
 
   upms: '系统管理',
   upmsUser: '用户管理',

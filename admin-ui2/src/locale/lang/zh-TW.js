@@ -44,10 +44,17 @@ export default {
   tree_select_page: '樹狀下拉選擇器',
   lazyload_page: '圖片懒加载',
 
-  searchText: 'Search',
+  searchText: '查询',
   addText: '新增',
   editText: '編輯',
   refreshText: '刷新',
+  resetText: '重置',
+  enabledText: '启用',
+  disabledText: '禁用',
+  allText: '全部',
+  statusText: '状态',
+  codeText: '代码',
+  nameText: '名称',
 
   upms: '系统管理',
   upmsUser: '用户管理',
