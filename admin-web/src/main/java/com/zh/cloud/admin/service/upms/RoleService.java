@@ -3,6 +3,8 @@ package com.zh.cloud.admin.service.upms;
 import com.ch.result.InvokerPage;
 import com.zh.cloud.admin.model.upms.Role;
 
+import java.util.List;
+
 /**
  *
  */
@@ -17,4 +19,6 @@ public interface RoleService {
     Role find(Long id);
 
     void delete(Long id);
+
+    List<Role> findByUserId(Long userId);
 }

@@ -3,21 +3,19 @@ package com.zh.cloud.admin.service.upms.impl;
 import com.ch.e.PubError;
 import com.ch.result.InvokerPage;
 import com.ch.result.ResultUtils;
-import com.ch.utils.BeanExtUtils;
-import com.ch.utils.CommonUtils;
 import com.ch.utils.ExceptionUtils;
-import com.zh.cloud.admin.common.exception.ServiceException;
+import com.google.common.collect.Lists;
 import com.zh.cloud.admin.model.upms.Role;
-import com.zh.cloud.admin.model.upms.User;
-import com.zh.cloud.admin.service.UserService;
+import com.zh.cloud.admin.model.upms.UserRole;
 import com.zh.cloud.admin.service.upms.RoleService;
 import com.zh.cloud.admin.utils.QueryUtils;
 import io.ebean.PagedList;
 import io.ebean.Query;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 角色信息业务层
@@ -66,5 +64,12 @@ public class RoleServiceImpl implements RoleService {
         Query<Role> query = Role.find.query();
         QueryUtils.likeAny(query, record, "code", "name");
         return query;
+    }
+
+    @Override
+    public List<Role> findByUserId(Long userId) {
+        List<UserRole> list = UserRole.find.query().fetch("role").where().eq("userId", userId).findList();
+        if (list.isEmpty()) return Lists.newArrayList();
+        return list.stream().map(UserRole::getRole).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }
