@@ -2,15 +2,10 @@ package com.zh.cloud.admin.model.upms;
 
 import com.zh.cloud.admin.model.Model;
 import io.ebean.Finder;
-import io.ebean.annotation.WhenCreated;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author zhimin.ma
@@ -20,11 +15,12 @@ import java.util.List;
 @Table(name = "st_user_role")
 @Data
 @EqualsAndHashCode(callSuper = false)
+@IdClass(UserRoleKey.class)
 public class UserRole extends Model {
 
     public static final UserRoleFinder find = new UserRoleFinder();
 
-    public static class UserRoleFinder extends Finder<Long, UserRole> {
+    public static class UserRoleFinder extends Finder<UserRoleKey, UserRole> {
 
         /**
          * Construct using the default EbeanServer.
@@ -36,13 +32,27 @@ public class UserRole extends Model {
     }
 
     @Id
-    @Column(name = "user_id")
+//    @Column(name = "user_id")
     private Long userId;
     @Id
-    @Column(name = "role_id")
+//    @Column(name = "role_id")
     private Long roleId;
 
     private String status;
+
+    public UserRole() {
+    }
+
+    public UserRole(Long userId, Long roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
+    }
+
+    public UserRole(Long userId, Long roleId, String status) {
+        this.userId = userId;
+        this.roleId = roleId;
+        this.status = status;
+    }
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", updatable = false, insertable = false)

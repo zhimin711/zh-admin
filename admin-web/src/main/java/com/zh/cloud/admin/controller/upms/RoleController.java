@@ -4,10 +4,13 @@ import com.ch.Constants;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
 import com.ch.utils.CommonUtils;
+import com.ch.utils.VueRecordUtils;
 import com.zh.cloud.admin.model.upms.Role;
 import com.zh.cloud.admin.service.upms.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 角色管理控制层
@@ -46,7 +49,7 @@ public class RoleController {
      * @param id  主键
      * @return 信息
      */
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id:[0-9]+}")
     public Result<?> detail(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> roleService.find(id));
     }
@@ -77,7 +80,7 @@ public class RoleController {
      * @param env    环境变量
      * @return 是否成功
      */
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{id:[0-9]+}")
     public Result<?> edit(@RequestBody Role record, @PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
             roleService.update(record);
@@ -91,11 +94,24 @@ public class RoleController {
      * @param env 环境变量
      * @return 是否成功
      */
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id:[0-9]+}")
     public Result<?> delete(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
             roleService.delete(id);
             return "";
+        });
+    }
+    /**
+     * 删除
+     *
+     * @param env 环境变量
+     * @return 是否成功
+     */
+    @DeleteMapping(value = "/all/")
+    public Result<?> all(@PathVariable String env, @PathVariable Long id) {
+        return ResultUtils.wrapList(() -> {
+            List<Role> records = roleService.findAll();
+            return VueRecordUtils.covertIdTree(records);
         });
     }
 }

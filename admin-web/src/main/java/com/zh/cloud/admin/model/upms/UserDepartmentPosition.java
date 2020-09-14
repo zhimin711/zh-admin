@@ -13,14 +13,14 @@ import javax.persistence.*;
  * @author zhimin.ma
  * 用户与组织和职位实体类
  */
-@Entity
-@Table(name = "st_user_department_position")
-@Data
-@EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "UserDepartmentPosition对象", description = "用户与组织和职位关联表")
+//@Entity
+//@Table(name = "st_user_department_position")
+//@Data
+//@EqualsAndHashCode(callSuper = false)
+//@ApiModel(value = "UserDepartmentPosition对象", description = "用户与组织和职位关联表")
 public class UserDepartmentPosition extends Model {
 
-    public static final UserDepartmentPositionFinder find = new UserDepartmentPositionFinder();
+//    public static final UserDepartmentPositionFinder find = new UserDepartmentPositionFinder();
 
     public static class UserDepartmentPositionFinder extends Finder<Long, UserDepartmentPosition> {
 

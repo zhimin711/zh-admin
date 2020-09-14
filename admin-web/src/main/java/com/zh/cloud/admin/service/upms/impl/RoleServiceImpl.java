@@ -67,9 +67,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> findByUserId(Long userId) {
-        List<UserRole> list = UserRole.find.query().fetch("role").where().eq("userId", userId).findList();
-        if (list.isEmpty()) return Lists.newArrayList();
-        return list.stream().map(UserRole::getRole).filter(Objects::nonNull).collect(Collectors.toList());
+    public List<Role> findAll() {
+        return Role.find.all();
     }
 }

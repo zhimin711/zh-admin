@@ -6,7 +6,11 @@ import com.ch.result.ResultUtils;
 import com.ch.utils.BeanExtUtils;
 import com.ch.utils.CommonUtils;
 import com.ch.utils.ExceptionUtils;
+import com.google.common.collect.Lists;
 import com.zh.cloud.admin.common.exception.ServiceException;
+import com.zh.cloud.admin.model.upms.Role;
+import com.zh.cloud.admin.model.upms.UserRole;
+import com.zh.cloud.admin.utils.QueryUtils;
 import io.ebean.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -14,7 +18,10 @@ import org.springframework.stereotype.Service;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 用户信息业务层
@@ -55,20 +62,36 @@ public class UserServiceImpl implements UserService {
         return InvokerPage.Page.build(page.getTotalCount(), page.getList());
     }
 
+    @Override
+    public User find(Long id) {
+        return User.find.byId(id);
+    }
+
 
     private Query<User> getBaseQuery(User record) {
         Query<User> query = User.find.query();
-//        query.fetch("canalCluster", "name").setDisableLazyLoading(true);
-
-
-        Map<String, Object> vm = BeanExtUtils.getDeclaredFieldValueMap(record);
-        if (!vm.isEmpty()) {
-            vm.forEach((k, v) -> {
-                if (CommonUtils.isEmpty(v)) return;
-                query.where().eq(k, v);
-            });
-        }
+        QueryUtils.eq(query, record);
 
         return query;
     }
+
+
+    @Override
+    public List<Role> findRoles(Long userId) {
+        List<UserRole> list = UserRole.find.query().fetch("role").where().eq("userId", userId).findList();
+        if (list.isEmpty()) return Lists.newArrayList();
+        return list.stream().map(UserRole::getRole).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    @Override
+    public void saveRoles(Long uid, List<Long> roleIds) {
+        if (CommonUtils.isEmpty(roleIds)) {
+//            UserRole userRole = new UserRole();
+        }
+        for (Long rid : roleIds) {
+            UserRole userRole = new UserRole(uid, rid);
+//            UserRole.find.byId()
+        }
+    }
+
 }

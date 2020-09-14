@@ -13,13 +13,13 @@ import javax.persistence.*;
  * @author zhimin.ma
  * 角色权限体类
  */
-@Entity
-@Table(name = "st_role_permission")
-@Data
-@EqualsAndHashCode(callSuper = false)
+//@Entity
+//@Table(name = "st_role_permission")
+//@Data
+//@EqualsAndHashCode(callSuper = false)
 public class RolePermission extends Model {
 
-    public static final RolePermissionFinder find = new RolePermissionFinder();
+//    public static final RolePermissionFinder find = new RolePermissionFinder();
 
     public static class RolePermissionFinder extends Finder<Long, RolePermission> {
 

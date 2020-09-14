@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 用户管理控制层
@@ -47,21 +48,13 @@ public class UserController {
     /**
      * 获取用户信息
      *
-     * @param token token
-     * @param env   环境变量
+     * @param env 环境变量
+     * @param id  用户id
      * @return 用户信息
      */
     @GetMapping(value = "/{id}")
-    public BaseModel<User> info(@RequestParam String token, @PathVariable String env, @PathVariable Long id) {
-        User user = LoginController.loginUsers.getIfPresent(token);
-        if (user != null) {
-            return BaseModel.getInstance(user);
-        } else {
-            BaseModel<User> model = BaseModel.getInstance(null);
-            model.setCode(50014);
-            model.setMessage("Invalid token");
-            return model;
-        }
+    public Result<?> info(@PathVariable String env, @PathVariable Long id) {
+        return ResultUtils.wrapFail(() -> userService.find(id));
     }
 
     /**
@@ -73,12 +66,10 @@ public class UserController {
      * @return 是否成功
      */
     @PutMapping(value = "")
-    public BaseModel<String> update(@RequestBody User user, @PathVariable String env,
-                                    HttpServletRequest httpServletRequest) {
+    public Result<?> update(@RequestBody User user, @PathVariable String env,
+                            HttpServletRequest httpServletRequest) {
         userService.update(user);
-        String token = (String) httpServletRequest.getAttribute("token");
-        LoginController.loginUsers.put(token, user);
-        return BaseModel.getInstance("success");
+        return Result.success();
     }
 
     /**
@@ -88,13 +79,13 @@ public class UserController {
      * @return 是否成功
      */
     @DeleteMapping(value = "/{id}")
-    public Result<String> delete(@PathVariable String env, @PathVariable Long id) {
+    public Result<?> delete(@PathVariable String env, @PathVariable Long id) {
         return Result.failed();
     }
 
 
     /**
-     * 获取详细信息
+     * 获取用户角色信息
      *
      * @param env 环境变量
      * @param id  主键
@@ -102,6 +93,22 @@ public class UserController {
      */
     @GetMapping(value = "/{id}/roles")
     public Result<?> roles(@PathVariable String env, @PathVariable Long id) {
-        return ResultUtils.wrapList(() -> roleService.findByUserId(id));
+        return ResultUtils.wrapList(() -> userService.findRoles(id));
+    }
+
+    /**
+     * 获取用户角色信息
+     *
+     * @param env 环境变量
+     * @param id  主键
+     * @return 信息
+     */
+    @PutMapping(value = "/{id}/roles")
+    public Result<?> roleSave(@PathVariable String env, @PathVariable Long id, @RequestBody List<Long> roleIds) {
+        return ResultUtils.wrapFail(() -> {
+
+            userService.saveRoles(id, roleIds);
+            return 1;
+        });
     }
 }

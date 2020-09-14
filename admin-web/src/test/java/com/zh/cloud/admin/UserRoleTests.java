@@ -3,6 +3,7 @@ package com.zh.cloud.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.zh.cloud.admin.model.upms.UserRole;
+import com.zh.cloud.admin.model.upms.UserRoleKey;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,12 @@ import java.util.List;
 @Slf4j
 public class UserRoleTests {
 
+
+    @Test
+    public void testUserRoleKey() {
+        UserRole r = UserRole.find.byId(new UserRoleKey(1L,7L));
+        log.info("{}", JSON.toJSON(r));
+    }
 
     @Test
     public void testFindRoles() {
