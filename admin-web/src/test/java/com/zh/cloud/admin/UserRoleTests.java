@@ -23,8 +23,9 @@ public class UserRoleTests {
 
     @Test
     public void testUserRoleKey() {
-        UserRole r = UserRole.find.byId(new UserRoleKey(1L,7L));
+        UserRole r = UserRole.find.byId(new UserRoleKey(6L, 5L));
         log.info("{}", JSON.toJSON(r));
+        r.delete();
     }
 
     @Test

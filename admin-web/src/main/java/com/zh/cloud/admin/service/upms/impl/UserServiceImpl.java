@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.zh.cloud.admin.common.exception.ServiceException;
 import com.zh.cloud.admin.model.upms.Role;
 import com.zh.cloud.admin.model.upms.UserRole;
+import com.zh.cloud.admin.model.upms.UserRoleKey;
 import com.zh.cloud.admin.utils.QueryUtils;
 import io.ebean.*;
 import org.apache.commons.lang.StringUtils;
@@ -78,19 +79,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Role> findRoles(Long userId) {
-        List<UserRole> list = UserRole.find.query().fetch("role").where().eq("userId", userId).findList();
+        List<UserRole> list = findUserRoles(userId);
         if (list.isEmpty()) return Lists.newArrayList();
         return list.stream().map(UserRole::getRole).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    private List<UserRole> findUserRoles(Long userId) {
+        return UserRole.find.query().fetch("role").where().eq("userId", userId).findList();
+    }
+
     @Override
     public void saveRoles(Long uid, List<Long> roleIds) {
+        List<UserRole> list = findUserRoles(uid);
         if (CommonUtils.isEmpty(roleIds)) {
-//            UserRole userRole = new UserRole();
+            list.forEach(UserRole::delete);
+            return;
         }
         for (Long rid : roleIds) {
-            UserRole userRole = new UserRole(uid, rid);
-//            UserRole.find.byId()
+            UserRoleKey userRolekey = new UserRoleKey(uid, rid);
+            UserRole ur = UserRole.find.byId(userRolekey);
         }
     }
 
