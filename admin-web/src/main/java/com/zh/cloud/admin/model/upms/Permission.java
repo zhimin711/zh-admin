@@ -77,7 +77,7 @@ public class Permission extends Model {
     @ApiModelProperty(value = "菜单顺序")
     private Integer sort;
 
-//    @ApiModelProperty(value = "是否隐藏(0.否 1.是)")
+//    @ApiModelProperty(value = "是否隐藏(0.否 1.是,按钮为隐藏则无需授权为用户登录权限)")
 //    private Boolean hidden;
 
 //    @ApiModelProperty(value = "是否为系统权限(0.否 1.是)")

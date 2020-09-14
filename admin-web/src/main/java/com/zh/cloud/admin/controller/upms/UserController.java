@@ -6,6 +6,7 @@ import com.zh.cloud.admin.controller.LoginController;
 import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
+import com.zh.cloud.admin.service.upms.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 用户分页查询
@@ -79,13 +82,26 @@ public class UserController {
     }
 
     /**
-     * 用户退出
+     * 用户删除
      *
      * @param env 环境变量
      * @return 是否成功
      */
-    @DeleteMapping
-    public BaseModel<String> delete(@PathVariable String env) {
-        return BaseModel.getInstance("success");
+    @DeleteMapping(value = "/{id}")
+    public Result<String> delete(@PathVariable String env, @PathVariable Long id) {
+        return Result.failed();
+    }
+
+
+    /**
+     * 获取详细信息
+     *
+     * @param env 环境变量
+     * @param id  主键
+     * @return 信息
+     */
+    @GetMapping(value = "/{id}/roles")
+    public Result<?> roles(@PathVariable String env, @PathVariable Long id) {
+        return ResultUtils.wrapList(() -> roleService.findByUserId(id));
     }
 }
