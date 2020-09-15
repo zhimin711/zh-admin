@@ -109,7 +109,7 @@ const defaultR = {
   password: ''
 }
 export default {
-  name: 'upmsUser1',
+  name: 'upmsUser',
   components: {
     Tables
   },
@@ -236,7 +236,11 @@ export default {
       this.$refs.recordForm.resetFields()
     },
     handleRoles () {
+      if (this.selectRows.length !== 1) {
+        return
+      }
       this.roleModal = true
+      this.record = Object.assign({}, this.selectRows[0])
       this.getUserRoles()
     },
     getRoles () {
