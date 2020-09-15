@@ -25,3 +25,10 @@ export const editRole = info => {
     method: 'put'
   })
 }
+
+export const getAllRole = () => {
+  return axios.request({
+    url: `${namespace}/all/ `,
+    method: 'get'
+  })
+}
