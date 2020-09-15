@@ -2,8 +2,6 @@ package com.zh.cloud.admin.model.upms;
 
 import com.zh.cloud.admin.model.Model;
 import io.ebean.Finder;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,15 +11,16 @@ import javax.persistence.*;
  * @author zhimin.ma
  * 角色权限体类
  */
-//@Entity
-//@Table(name = "st_role_permission")
-//@Data
-//@EqualsAndHashCode(callSuper = false)
+@Entity
+@Table(name = "st_role_permission")
+@Data
+@EqualsAndHashCode(callSuper = false)
+@IdClass(RolePermissionKey.class)
 public class RolePermission extends Model {
 
-//    public static final RolePermissionFinder find = new RolePermissionFinder();
+    public static final RolePermissionFinder find = new RolePermissionFinder();
 
-    public static class RolePermissionFinder extends Finder<Long, RolePermission> {
+    public static class RolePermissionFinder extends Finder<RolePermissionKey, RolePermission> {
 
         /**
          * Construct using the default EbeanServer.

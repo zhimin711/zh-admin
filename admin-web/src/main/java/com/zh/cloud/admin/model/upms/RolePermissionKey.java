@@ -1,6 +1,5 @@
 package com.zh.cloud.admin.model.upms;
 
-import io.ebean.annotation.Identity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +17,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class UserRoleKey implements Serializable {
+public class RolePermissionKey implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long userId;
+    private Long permissionId;
 
     private Long roleId;
 }

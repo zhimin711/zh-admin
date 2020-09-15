@@ -4,9 +4,9 @@ import com.ch.e.PubError;
 import com.ch.result.InvokerPage;
 import com.ch.result.ResultUtils;
 import com.ch.utils.ExceptionUtils;
-import com.google.common.collect.Lists;
+import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.model.upms.Role;
-import com.zh.cloud.admin.model.upms.UserRole;
+import com.zh.cloud.admin.model.upms.RolePermission;
 import com.zh.cloud.admin.service.upms.RoleService;
 import com.zh.cloud.admin.utils.QueryUtils;
 import io.ebean.PagedList;
@@ -14,7 +14,6 @@ import io.ebean.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -69,5 +68,14 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> findAll() {
         return Role.find.all();
+    }
+
+    @Override
+    public List<Permission> findPermissions(Long roleId) {
+        return findRolePermissionList(roleId).parallelStream().map(RolePermission::getPermission).collect(Collectors.toList());
+    }
+
+    private List<RolePermission> findRolePermissionList(Long roleId) {
+        return RolePermission.find.query().fetch("permission").where().eq("roleId", roleId).findList();
     }
 }

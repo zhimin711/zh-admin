@@ -1,6 +1,7 @@
 package com.zh.cloud.admin.service.upms;
 
 import com.ch.result.InvokerPage;
+import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.model.upms.Role;
 
 import java.util.List;
@@ -22,4 +23,5 @@ public interface RoleService {
 
     List<Role> findAll();
 
+    List<Permission> findPermissions(Long roleId);
 }
