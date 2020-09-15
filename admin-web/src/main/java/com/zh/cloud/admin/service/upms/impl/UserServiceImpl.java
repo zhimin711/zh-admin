@@ -1,5 +1,6 @@
 package com.zh.cloud.admin.service.upms.impl;
 
+import com.ch.NumS;
 import com.ch.e.PubError;
 import com.ch.result.InvokerPage;
 import com.ch.result.ResultUtils;
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -95,10 +98,18 @@ public class UserServiceImpl implements UserService {
             list.forEach(UserRole::delete);
             return;
         }
+        Map<Long, UserRole> roleMap = list.parallelStream().collect(Collectors.toMap(UserRole::getRoleId, Function.identity()));
+
         for (Long rid : roleIds) {
+            roleMap.remove(rid);
             UserRoleKey userRolekey = new UserRoleKey(uid, rid);
             UserRole ur = UserRole.find.byId(userRolekey);
+            if (ur != null) {
+                continue;
+            }
+            new UserRole(uid, rid, NumS._0).save();
         }
+        if (!roleMap.isEmpty()) roleMap.forEach((k, v) -> v.delete());
     }
 
 }

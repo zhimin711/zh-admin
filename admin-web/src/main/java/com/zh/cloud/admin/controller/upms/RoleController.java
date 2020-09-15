@@ -36,9 +36,9 @@ public class RoleController {
      */
     @GetMapping(value = {"/{num:[0-9]+}/{size:[0-9]+}"})
     public Result<?> page(Role record,
-                             @PathVariable(value = "num") int pageNum,
-                             @PathVariable(value = "size") int pageSize,
-                             @PathVariable String env) {
+                          @PathVariable(value = "num") int pageNum,
+                          @PathVariable(value = "size") int pageSize,
+                          @PathVariable String env) {
         return ResultUtils.wrapPage(() -> roleService.findPage(record, pageNum, pageSize));
     }
 
@@ -101,17 +101,18 @@ public class RoleController {
             return "";
         });
     }
+
     /**
-     * 删除
+     * 获取所有角色
      *
      * @param env 环境变量
-     * @return 是否成功
+     * @return 角色
      */
-    @DeleteMapping(value = "/all/")
-    public Result<?> all(@PathVariable String env, @PathVariable Long id) {
+    @GetMapping(value = "/all/")
+    public Result<?> all(@PathVariable String env) {
         return ResultUtils.wrapList(() -> {
             List<Role> records = roleService.findAll();
-            return VueRecordUtils.covertIdTree(records);
+            return VueRecordUtils.jsonKeyLabelTreeByIdAndName(records);
         });
     }
 }

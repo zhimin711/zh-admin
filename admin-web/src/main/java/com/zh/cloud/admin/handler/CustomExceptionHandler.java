@@ -1,5 +1,7 @@
 package com.zh.cloud.admin.handler;
 
+import com.ch.e.PubError;
+import com.ch.result.Result;
 import com.zh.cloud.admin.common.exception.ServiceException;
 import com.zh.cloud.admin.model.BaseModel;
 import org.slf4j.Logger;
@@ -30,15 +32,12 @@ public class CustomExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(value = Exception.class)
-    public BaseModel commonExceptionHandle(Exception e) {
+    public Result<?> commonExceptionHandle(Exception e) {
         if (e instanceof ServiceException) {
             logger.error(e.getMessage());
         } else {
             logger.error(e.getMessage(), e);
         }
-        BaseModel res = new BaseModel();
-        res.setCode(50000);
-        res.setMessage(e.getMessage());
-        return res;
+        return Result.error(PubError.UNKNOWN);
     }
 }

@@ -106,9 +106,8 @@ public class UserController {
     @PutMapping(value = "/{id}/roles")
     public Result<?> roleSave(@PathVariable String env, @PathVariable Long id, @RequestBody List<Long> roleIds) {
         return ResultUtils.wrapFail(() -> {
-
             userService.saveRoles(id, roleIds);
-            return 1;
+            return true;
         });
     }
 }
