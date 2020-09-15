@@ -84,6 +84,11 @@ public class PermissionServiceImpl implements PermissionService {
         return records;
     }
 
+    @Override
+    public List<Permission> findAll() {
+        return Permission.find.all();
+    }
+
     private Query<Permission> getBaseQuery(Permission record) {
         Query<Permission> query = Permission.find.query();
         QueryUtils.eq(query, record);

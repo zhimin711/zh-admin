@@ -27,4 +27,6 @@ public interface PermissionService {
      * @return tree
      */
     List<Permission> findTreeByTypeAndStatus(String type, Status status);
+
+    List<Permission> findAll();
 }

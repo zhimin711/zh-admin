@@ -1,14 +1,17 @@
 package com.zh.cloud.admin.utils;
 
 import com.ch.Constants;
-import com.ch.NumS;
+import com.ch.StatusS;
 import com.ch.pojo.VueRecord;
 import com.ch.utils.CommonUtils;
+import com.ch.utils.StringExtUtils;
 import com.google.common.collect.Lists;
 import com.zh.cloud.admin.et.PermissionType;
 import com.zh.cloud.admin.model.upms.Permission;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -74,5 +77,20 @@ public class VueRecordUtils {
         vueRecord.setValue(record.getId().toString());
         vueRecord.setDisabled(!CommonUtils.isEquals(Constants.ENABLED, record.getStatus()));
         return vueRecord;
+    }
+
+    public static List<VueRecord> convertTree(List<Permission> records) {
+        Map<String, List<Permission>> permissionMap = records.parallelStream().collect(Collectors.groupingBy(Permission::getParentId));
+        permissionMap.forEach((k, v) -> {
+            v.sort(Comparator.comparing(Permission::getSort));
+            v.forEach(r -> {
+                String pid = StringExtUtils.linkStrIgnoreZero(Constants.SEPARATOR_2, r.getParentId(), r.getId().toString());
+                if (permissionMap.get(pid) != null) {
+                    r.setChildren(permissionMap.get(pid));
+                }
+            });
+        });
+
+        return com.ch.utils.VueRecordUtils.covertIdTree(permissionMap.get(StatusS.BEGIN));
     }
 }

@@ -3,13 +3,9 @@ package com.zh.cloud.admin.controller.upms;
 import com.ch.Constants;
 import com.ch.NumS;
 import com.ch.Status;
-import com.ch.pojo.VueRecord;
-import com.ch.result.InvokerPage;
-import com.ch.result.PageResult;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
 import com.ch.utils.CommonUtils;
-import com.zh.cloud.admin.et.PermissionType;
 import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.service.upms.PermissionService;
 import com.zh.cloud.admin.utils.VueRecordUtils;
@@ -43,9 +39,9 @@ public class PermissionController {
      */
     @GetMapping(value = {"/{num:[0-9]+}/{size:[0-9]+}"})
     public Result<?> page(Permission record,
-                                   @PathVariable(value = "num") int pageNum,
-                                   @PathVariable(value = "size") int pageSize,
-                                   @PathVariable String env) {
+                          @PathVariable(value = "num") int pageNum,
+                          @PathVariable(value = "size") int pageSize,
+                          @PathVariable String env) {
         return ResultUtils.wrapPage(() -> permissionService.findPage(record, pageNum, pageSize));
     }
 
@@ -122,6 +118,20 @@ public class PermissionController {
         return ResultUtils.wrapList(() -> {
             List<Permission> records = permissionService.findTreeByTypeAndStatus(type, Status.ALL);
             return VueRecordUtils.convertParentsByType(records, type);
+        });
+    }
+
+    /**
+     * 获取所有角色
+     *
+     * @param env 环境变量
+     * @return 角色
+     */
+    @GetMapping(value = "/all/")
+    public Result<?> all(@PathVariable String env) {
+        return ResultUtils.wrapList(() -> {
+            List<Permission> records = permissionService.findAll();
+            return VueRecordUtils.convertTree(records);
         });
     }
 }
