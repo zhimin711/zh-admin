@@ -3,10 +3,12 @@ package com.zh.cloud.admin.service.upms.impl;
 import com.ch.e.PubError;
 import com.ch.result.InvokerPage;
 import com.ch.result.ResultUtils;
+import com.ch.utils.CommonUtils;
 import com.ch.utils.ExceptionUtils;
 import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.model.upms.Role;
 import com.zh.cloud.admin.model.upms.RolePermission;
+import com.zh.cloud.admin.model.upms.RolePermissionKey;
 import com.zh.cloud.admin.service.upms.RoleService;
 import com.zh.cloud.admin.utils.QueryUtils;
 import io.ebean.PagedList;
@@ -14,6 +16,8 @@ import io.ebean.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -73,6 +77,27 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Permission> findPermissions(Long roleId) {
         return findRolePermissionList(roleId).parallelStream().map(RolePermission::getPermission).collect(Collectors.toList());
+    }
+
+    @Override
+    public void savePermissions(Long roleId, List<Long> permissionIds) {
+        List<RolePermission> list = findRolePermissionList(roleId);
+        if (CommonUtils.isEmpty(permissionIds)) {
+            list.forEach(RolePermission::delete);
+            return;
+        }
+        Map<Long, RolePermission> permissionMap = list.parallelStream().collect(Collectors.toMap(RolePermission::getPermissionId, Function.identity()));
+
+        for (Long pid : permissionIds) {
+            permissionMap.remove(pid);
+            RolePermissionKey rolePermissionKey = new RolePermissionKey(roleId, pid);
+            RolePermission ur = RolePermission.find.byId(rolePermissionKey);
+            if (ur != null) {
+                continue;
+            }
+            new RolePermission(roleId, pid).save();
+        }
+        if (!permissionMap.isEmpty()) permissionMap.forEach((k, v) -> v.delete());
     }
 
     private List<RolePermission> findRolePermissionList(Long roleId) {

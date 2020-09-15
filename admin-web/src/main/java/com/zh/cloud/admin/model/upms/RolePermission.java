@@ -4,6 +4,7 @@ import com.zh.cloud.admin.model.Model;
 import io.ebean.Finder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -12,8 +13,9 @@ import javax.persistence.*;
  * 角色权限体类
  */
 @Entity
-@Table(name = "st_role_permission")
+@Table(name = "st_role_menu")
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @IdClass(RolePermissionKey.class)
 public class RolePermission extends Model {
@@ -38,6 +40,11 @@ public class RolePermission extends Model {
     @Id
     @Column(name = "permission_id")
     private Long permissionId;
+
+    public RolePermission(Long roleId, Long permissionId) {
+        this.roleId = roleId;
+        this.permissionId = permissionId;
+    }
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", updatable = false, insertable = false)

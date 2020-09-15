@@ -115,4 +115,32 @@ public class RoleController {
             return VueRecordUtils.jsonKeyLabelTreeByIdAndName(records);
         });
     }
+
+
+    /**
+     * 获取角色权限信息
+     *
+     * @param env 环境变量
+     * @param id  主键
+     * @return 信息
+     */
+    @GetMapping(value = "/{id}/permissions")
+    public Result<?> permissions(@PathVariable String env, @PathVariable Long id) {
+        return ResultUtils.wrapList(() -> roleService.findPermissions(id));
+    }
+
+    /**
+     * 保存角色权限
+     *
+     * @param env 环境变量
+     * @param id  主键
+     * @return 信息
+     */
+    @PutMapping(value = "/{id}/permissions")
+    public Result<?> permissionSave(@PathVariable String env, @PathVariable Long id, @RequestBody List<Long> permissionIds) {
+        return ResultUtils.wrapFail(() -> {
+            roleService.savePermissions(id, permissionIds);
+            return true;
+        });
+    }
 }

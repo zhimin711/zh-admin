@@ -110,7 +110,7 @@ public class UserController {
     }
 
     /**
-     * 获取用户角色信息
+     * 保存用户角色信息
      *
      * @param env 环境变量
      * @param id  主键

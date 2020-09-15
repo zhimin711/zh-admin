@@ -4,6 +4,7 @@ import com.zh.cloud.admin.model.Model;
 import io.ebean.Finder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -14,6 +15,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "st_user_role")
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @IdClass(UserRoleKey.class)
 public class UserRole extends Model {
@@ -32,21 +34,13 @@ public class UserRole extends Model {
     }
 
     @Id
-//    @Column(name = "user_id")
+    @Column(name = "user_id")
     private Long userId;
     @Id
-//    @Column(name = "role_id")
+    @Column(name = "role_id")
     private Long roleId;
 
     private String status;
-
-    public UserRole() {
-    }
-
-    public UserRole(Long userId, Long roleId) {
-        this.userId = userId;
-        this.roleId = roleId;
-    }
 
     public UserRole(Long userId, Long roleId, String status) {
         this.userId = userId;

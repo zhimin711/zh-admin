@@ -90,5 +90,19 @@ create table st_position
     key idx_code (`code`)
 ) comment = '职位信息表';
 
+CREATE TABLE `st_role_menu` (
+  `ROLE_ID` bigint(20) NOT NULL COMMENT '角色ID',
+  `PERMISSION_ID` bigint(20) NOT NULL COMMENT '菜单ID',
+  PRIMARY KEY (`ROLE_ID`,`PERMISSION_ID`) USING BTREE,
+  KEY `IDX_ST_RM_MENU_ID` (`PERMISSION_ID`) USING BTREE
+) COMMENT='后台角色菜单表';
+
+CREATE TABLE `st_user_department_position` (
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `department_id` varchar(100) NOT NULL COMMENT '组织ID',
+  `position_id` bigint(20) NOT NULL COMMENT '职位ID',
+  PRIMARY KEY (`user_id`,`department_id`,`position_id`),
+  KEY `idx_dept_id` (`department_id`)
+) COMMENT='用户与组织和职位关联表';
 
 SET FOREIGN_KEY_CHECKS = 1;
