@@ -1,16 +1,13 @@
 package com.zh.cloud.admin.controller.upms;
 
+import com.ch.Constants;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
-import com.zh.cloud.admin.controller.LoginController;
-import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
-import com.zh.cloud.admin.service.upms.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,8 +22,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private RoleService roleService;
 
     /**
      * 用户分页查询
@@ -52,22 +47,40 @@ public class UserController {
      * @param id  用户id
      * @return 用户信息
      */
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id:[0-9]+}")
     public Result<?> info(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> userService.find(id));
+    }
+
+
+    /**
+     *  创建信息
+     *
+     * @param record 信息
+     * @param env    环境变量
+     * @return 是否成功
+     */
+    @PostMapping(value = "")
+    public Result<?> add(@RequestBody User record, @PathVariable String env) {
+        return ResultUtils.wrapFail(() -> {
+
+            record.setType(Constants.ENABLED);
+//            userService.save(record);
+            return "";
+        });
     }
 
     /**
      * 修改用户信息
      *
-     * @param user               用户信息
-     * @param env                环境变量
-     * @param httpServletRequest httpServletRequest
+     * @param user 用户信息
+     * @param env  环境变量
+     * @param id   id
      * @return 是否成功
      */
-    @PutMapping(value = "")
+    @PutMapping(value = "/{id:[0-9]+}")
     public Result<?> update(@RequestBody User user, @PathVariable String env,
-                            HttpServletRequest httpServletRequest) {
+                            @PathVariable Long id) {
         userService.update(user);
         return Result.success();
     }

@@ -32,14 +32,14 @@ public class ToolsController {
     @PutMapping(value = "encrypt")
     public BaseModel<String> encrypt(@RequestBody User user, @PathVariable String env,
                                      HttpServletRequest httpServletRequest) {
-        if(StringUtils.isBlank(user.getOldPassword())|| StringUtils.isBlank(user.getPassword())){
-            BaseModel<String> model = BaseModel.getInstance(null);
-            model.setCode(50014);
-            model.setMessage("Invalid token");
-            return model;
-        }
+//        if(StringUtils.isBlank(user.getOldPassword())|| StringUtils.isBlank(user.getPassword())){
+//            BaseModel<String> model = BaseModel.getInstance(null);
+//            model.setCode(50014);
+//            model.setMessage("Invalid token");
+//            return model;
+//        }
 
-        System.setProperty("jasypt.encryptor.password", user.getOldPassword());
+//        System.setProperty("jasypt.encryptor.password", user.getOldPassword());
         StringEncryptor stringEncryptor = new DefaultLazyEncryptor(new StandardEnvironment());
         String pwd = stringEncryptor.encrypt(user.getPassword());
         return BaseModel.getInstance(pwd);

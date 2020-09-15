@@ -24,3 +24,19 @@ export const saveUserRoles = (id, data) => {
     data
   })
 }
+
+export const addUser = info => {
+  return axios.request({
+    url: `${namespace}`,
+    data: info,
+    method: 'post'
+  })
+}
+
+export const editUser = info => {
+  return axios.request({
+    url: `${namespace}/${info.id}`,
+    data: info,
+    method: 'put'
+  })
+}

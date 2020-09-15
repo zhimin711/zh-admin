@@ -55,7 +55,7 @@ public class RoleController {
     }
 
     /**
-     * 修改信息
+     *  创建信息
      *
      * @param record 信息
      * @param env    环境变量
@@ -69,7 +69,7 @@ public class RoleController {
             }
             record.setType(Constants.ENABLED);
             roleService.save(record);
-            return "";
+            return true;
         });
     }
 

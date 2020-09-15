@@ -3,11 +3,13 @@ package com.zh.cloud.admin.model.upms;
 import com.zh.cloud.admin.model.Model;
 import io.ebean.Finder;
 import io.ebean.annotation.WhenCreated;
+import io.ebean.annotation.WhenModified;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -44,8 +46,8 @@ public class User extends Model {
 //    private String avatar;
 //    private String name;
 
-    @Transient
-    private String oldPassword;
+//    @Transient
+//    private String oldPassword;
 
     @ApiModelProperty(value = "主键ID")
     @Id
@@ -64,7 +66,7 @@ public class User extends Model {
     private String realName;
 
     @ApiModelProperty(value = "出生日期")
-    private Date birth;
+    private LocalDate birth;
 
     @ApiModelProperty(value = "性别: 0.女 1.男")
     private Boolean sex;
@@ -107,6 +109,7 @@ public class User extends Model {
     private String createBy;
 
     @ApiModelProperty(value = "更新时间")
+    @WhenModified
     private Date updateAt;
 
     @ApiModelProperty(value = "更新人")

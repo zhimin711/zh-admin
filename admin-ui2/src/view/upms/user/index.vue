@@ -38,11 +38,32 @@
           <FormItem label="用户名" prop="username" required>
             <i-input type="text" v-model="record.username" :disabled="disabledProps.code"></i-input>
           </FormItem>
-          <FormItem label="新密码" prop="password" required>
-            <i-input type="password" v-model="record.password"></i-input>
+          <FormItem label="真实姓名" prop="realName" required>
+            <i-input type="text" v-model="record.realName"></i-input>
           </FormItem>
-          <FormItem label="确认密码" prop="passwdCheck">
-            <i-input type="password" v-model="record.passwdCheck"></i-input>
+          <FormItem label="性别">
+            <RadioGroup v-model="recordSex">
+              <Radio label="1">男</Radio>
+              <Radio label="0">女</Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="出生日期" prop="birth">
+            <DatePicker type="date" v-model="record.birth" placeholder="Select date" style="width: 200px" @on-change="changeDateBirth"></DatePicker>
+          </FormItem>
+          <FormItem label="手机号码" prop="mobile">
+            <i-input type="text" v-model="record.mobile"></i-input>
+          </FormItem>
+          <FormItem label="电子邮箱" prop="email">
+            <i-input type="text" v-model="record.email"></i-input>
+          </FormItem>
+          <FormItem label="过期日期" prop="expired">
+            <DatePicker type="date" v-model="record.expired" placeholder="Select date" style="width: 200px"></DatePicker>
+          </FormItem>
+          <FormItem label="状态" prop="status">
+            <i-switch size="large" v-model="recordStatus">
+              <span slot="open">开启</span>
+              <span slot="close">关闭</span>
+            </i-switch>
           </FormItem>
         </Form>
         <div slot="footer">
@@ -59,7 +80,7 @@
           :data="roles"
           :target-keys="valueRoles"
           :list-style="listStyle"
-          :titles="['未分配角色','已分配角色']"
+          :titles="['可分配角色','已分配角色']"
           :operations="['删除','分配']"
           filterable
           @on-change="changeRole">
@@ -80,7 +101,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { getPageUser, getUserRoles, saveUserRoles } from '@/api/upms/user'
+import { getPageUser, getUserRoles, saveUserRoles, addUser, editUser } from '@/api/upms/user'
 import { getAllRole } from '@/api/upms/role'
 
 const defaultR = {
@@ -109,6 +130,8 @@ export default {
         username: false
       },
       record: {},
+      recordSex: '',
+      recordStatus: true,
       recordRules: {},
       columns: [
         {
@@ -169,6 +192,41 @@ export default {
       this.recordModalType = 'edit'
       this.disabledProps.code = true
       this.record = Object.assign({}, row)
+      this.recordSex = undefined
+      if (typeof row.sex === 'undefined' || row.sex === null) {
+        this.recordSex = undefined
+      } else if (row.sex) {
+        this.recordSex = '1'
+      } else {
+        this.recordSex = '0'
+      }
+    },
+    async handleSubmit () {
+      let resp
+      let op = ''
+      this.record.status = this.recordStatus ? '1' : '0'
+
+      if (typeof this.recordSex === 'undefined' || this.recordSex === null) {
+        this.record.sex = undefined
+      } else {
+        this.record.sex = this.recordSex === '1'
+      }
+
+      this.loading = true
+      if (this.recordModalType === 'add') {
+        op = '新增'
+        resp = await addUser(this.record).finally(() => { this.loading = false })
+      } else if (this.recordModalType === 'edit') {
+        op = '修改'
+        resp = await editUser(this.record).finally(() => { this.loading = false })
+      }
+      if (resp && resp.data && resp.data.success) {
+        this.$Message.success(`${op}用户 [${this.record.username}] 成功！`)
+        this.cancelRecord()
+        this.handleSearch()
+      } else {
+        this.$Message.error(`${op}用户 [${this.record.username}] 失败！`)
+      }
     },
     handleDelete (params) {
       console.log(params)
@@ -215,6 +273,9 @@ export default {
     },
     changeRole (targetKeys) {
       this.valueRoles = targetKeys
+    },
+    changeDateBirth (date) {
+      this.record.birth = date
     },
     reloadRoles () {
       this.getRoles()

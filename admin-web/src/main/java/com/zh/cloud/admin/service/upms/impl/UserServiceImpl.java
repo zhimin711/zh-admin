@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         if (userTmp == null) {
             throw new ServiceException();
         }
-        user.update("username", "nn:password");
+        user.update("realName", "nn:password", "sex", "birth", "email", "mobile");
     }
 
     public InvokerPage.Page<User> findPage(User record, int pageNum, int pageSize) {
