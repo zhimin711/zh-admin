@@ -1,6 +1,7 @@
 package com.zh.cloud.admin.service.upms.impl;
 
 import com.ch.NumS;
+import com.ch.StatusS;
 import com.ch.e.PubError;
 import com.ch.result.InvokerPage;
 import com.ch.result.ResultUtils;
@@ -100,14 +101,25 @@ public class UserServiceImpl implements UserService {
         }
         Map<Long, UserRole> roleMap = list.parallelStream().collect(Collectors.toMap(UserRole::getRoleId, Function.identity()));
 
+        boolean nonDefault = list.isEmpty() || list.parallelStream().noneMatch(e -> CommonUtils.isEquals(StatusS.SELECTED, e.getStatus()));
         for (Long rid : roleIds) {
             roleMap.remove(rid);
             UserRoleKey userRolekey = new UserRoleKey(uid, rid);
             UserRole ur = UserRole.find.byId(userRolekey);
             if (ur != null) {
+                if (nonDefault) {
+                    ur.setStatus(StatusS.SELECTED);
+                    ur.update("status");
+                    nonDefault = false;
+                }
                 continue;
             }
-            new UserRole(uid, rid, NumS._0).save();
+            if (nonDefault) {
+                new UserRole(uid, rid, StatusS.SELECTED).save();
+                nonDefault = false;
+            } else {
+                new UserRole(uid, rid, StatusS.UNSELECTED).save();
+            }
         }
         if (!roleMap.isEmpty()) roleMap.forEach((k, v) -> v.delete());
     }
