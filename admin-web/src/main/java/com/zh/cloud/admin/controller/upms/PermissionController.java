@@ -131,7 +131,7 @@ public class PermissionController {
     public Result<?> all(@PathVariable String env) {
         return ResultUtils.wrapList(() -> {
             List<Permission> records = permissionService.findAll();
-            return VueRecordUtils.convertTree(records);
+            return VueRecordUtils.convertTreePermission(records);
         });
     }
 }

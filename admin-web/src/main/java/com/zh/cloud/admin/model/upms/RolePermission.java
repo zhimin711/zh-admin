@@ -34,11 +34,11 @@ public class RolePermission extends Model {
     }
 
     @Id
-    @Column(name = "role_id")
+//    @Column(name = "role_id")
     private Long roleId;
 
     @Id
-    @Column(name = "permission_id")
+//    @Column(name = "permission_id")
     private Long permissionId;
 
     public RolePermission(Long roleId, Long permissionId) {

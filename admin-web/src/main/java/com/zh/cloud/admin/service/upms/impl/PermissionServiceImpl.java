@@ -86,6 +86,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<Permission> findAll() {
+//        Permission.find.query().select("id, parentId, parentName");
         return Permission.find.all();
     }
 

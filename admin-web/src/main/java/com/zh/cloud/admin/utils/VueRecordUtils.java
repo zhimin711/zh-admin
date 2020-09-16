@@ -79,7 +79,7 @@ public class VueRecordUtils {
         return vueRecord;
     }
 
-    public static List<VueRecord> convertTree(List<Permission> records) {
+    public static List<Permission> convertTreePermission(List<Permission> records) {
         Map<String, List<Permission>> permissionMap = records.parallelStream().collect(Collectors.groupingBy(Permission::getParentId));
         permissionMap.forEach((k, v) -> {
             v.sort(Comparator.comparing(Permission::getSort));
@@ -91,6 +91,10 @@ public class VueRecordUtils {
             });
         });
 
-        return com.ch.utils.VueRecordUtils.covertIdTree(permissionMap.get(StatusS.BEGIN));
+        return permissionMap.get(StatusS.BEGIN);
+    }
+
+    public static List<VueRecord> convertTree(List<Permission> records) {
+        return com.ch.utils.VueRecordUtils.covertIdTree(convertTreePermission(records));
     }
 }
