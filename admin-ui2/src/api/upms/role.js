@@ -32,3 +32,18 @@ export const getAllRole = () => {
     method: 'get'
   })
 }
+
+export const getRolePermissions = (id) => {
+  return axios.request({
+    url: `${namespace}/${id}/permissions`,
+    method: 'get'
+  })
+}
+
+export const saveRolePermissions = (id, data) => {
+  return axios.request({
+    url: `${namespace}/${id}/permissions`,
+    method: 'put',
+    data
+  })
+}

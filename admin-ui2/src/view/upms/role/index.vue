@@ -53,19 +53,19 @@
           </FormItem>
         </Form>
         <div slot="footer">
-          <Button type="primary" @click="handleSubmit('recordForm')" :loading="loading">提交</Button>
-          <Button @click="cancelRecord" style="margin-left: 8px" :disabled="loading">取消</Button>
+          <Button type="primary" @click="handleSubmit('recordForm')" :loading="loadingModal">提交</Button>
+          <Button @click="cancelRecord" style="margin-left: 8px" :disabled="loadingModal">取消</Button>
         </div>
       </Modal>
       <Modal v-model="permissionModal" size="large">
         <p slot="header">
           请注意，您当前正在对 <span style="color:red; vertical-align: top;">{{record.name}}</span> 角色进行权限分配操作！
         </p>
-        <Tree :data="permissions" show-checkbox></Tree>
+        <!--<Tree :data="valuesPermissions" show-checkbox :render="renderPermissionTree"></Tree>-->
+        <Tree2 ref="permissionTree" :setting="treeSettings" :nodes="valuesPermissions"></Tree2>
         <div slot="footer">
-          <Button type="primary" @click="handleSubmit" :loading="loading">提交</Button>
-          <Button @click="()=>{this.permissionModal = false;this.valuesPermissions = []}" style="margin-left: 8px"
-                  :disabled="loading">取消
+          <Button type="primary" @click="saveRolePermissions" :loading="loadingModal">提交</Button>
+          <Button @click="()=>{this.permissionModal = false;this.valuesPermissions = []}" style="margin-left: 8px" :disabled="loadingModal">取消
           </Button>
         </div>
       </Modal>
@@ -75,7 +75,10 @@
 
 <script>
 import Tables from '_c/tables'
-import { getPageRole, addRole, editRole } from '@/api/upms/role'
+import Tree2 from 'vue-giant-tree'
+
+import { getPageRole, addRole, editRole, getRolePermissions, saveRolePermissions } from '@/api/upms/role'
+import { getAllPermission } from '@/api/upms/permission'
 
 const defaultRecord = {
   code: '',
@@ -83,13 +86,14 @@ const defaultRecord = {
   status: '1'
 }
 export default {
-  name: 'upmsRole1',
+  name: 'upmsRole',
   components: {
-    Tables
+    Tables, Tree2
   },
   data () {
     return {
       loading: false,
+      loadingModal: false,
       columns: [
         {
           type: 'selection',
@@ -115,6 +119,9 @@ export default {
       },
       tableData: [],
       selectRows: [],
+      treeSettings: {
+        check: { enable: true }
+      },
       permissionModal: false,
       permissions: [],
       valuesPermissions: [],
@@ -171,19 +178,80 @@ export default {
       }
       this.permissionModal = true
       this.record = Object.assign({}, this.selectRows[0])
+      this.getRolePermissions()
+    },
+    getPermissions () {
+      this.permissions = []
+      getAllPermission().then(resp => {
+        const { data } = resp
+        if (data && data.success) {
+          this.permissions = data.rows
+          // this.valuesPermissions = data.rows
+        }
+      })
+    },
+    getRolePermissions () {
+      this.loadingModal = true
+      this.valuesPermissions = []
+      getRolePermissions(this.record.id).then(resp => {
+        const { data } = resp
+        if (data && data.success) {
+          this.filterPermissions(this.permissions, data.rows)
+          this.valuesPermissions = Array.from(this.permissions)
+        }
+      }).finally(() => {
+        this.loadingModal = false
+      })
+    },
+    saveRolePermissions () {
+      let checkedNodes = this.$refs.permissionTree.ztreeObj.getCheckedNodes(true)
+      const checkedIds = checkedNodes.map(item => item.id)
+      saveRolePermissions(this.record.id, checkedIds).then(resp => {
+        const { data } = resp
+        if (data && data.success) {
+          this.permissionModal = false
+          this.$Message.success(` [${this.record.name}] 分配权限成功！`)
+        } else {
+          this.$Message.error(` [${this.record.name}] 分配权限失败！`)
+        }
+      })
+    },
+    filterPermissions (allRows, selectRows) {
+      allRows.forEach(item => {
+        item.open = undefined
+        item.checked = undefined
+        // item.selected = undefined
+        let hasChildren = item.children && item.children.length > 0
+        for (let i = 0; i < selectRows.length; i++) {
+          if (item.id === selectRows[i].id) {
+            item.checked = true
+            if (hasChildren) {
+              item.open = true
+              // item.selected = true
+            } else {
+              // item.checked = true
+            }
+            selectRows.splice(i, 1)
+            break
+          }
+        }
+        if (hasChildren) {
+          this.filterPermissions(item.children, selectRows)
+        }
+      })
     },
     async handleSubmit () {
       let resp
       let op = ''
       this.record.status = this.recordStatus ? '1' : '0'
 
-      this.loading = true
+      this.loadingModal = true
       if (this.recordModalType === 'add') {
         op = '新增'
-        resp = await addRole(this.record).finally(() => { this.loading = false })
+        resp = await addRole(this.record).finally(() => { this.loadingModal = false })
       } else if (this.recordModalType === 'edit') {
         op = '修改'
-        resp = await editRole(this.record).finally(() => { this.loading = false })
+        resp = await editRole(this.record).finally(() => { this.loadingModal = false })
       }
       if (resp && resp.data && resp.data.success) {
         this.$Message.success(`${op}角色 [${this.record.name}] 成功！`)
@@ -203,6 +271,7 @@ export default {
   },
   mounted () {
     this.handleSearch()
+    this.getPermissions()
   }
 }
 </script>

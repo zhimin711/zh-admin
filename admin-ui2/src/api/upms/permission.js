@@ -31,3 +31,10 @@ export const editPermission = info => {
     method: 'put'
   })
 }
+
+export const getAllPermission = () => {
+  return axios.request({
+    url: `${namespace}/all/ `,
+    method: 'get'
+  })
+}

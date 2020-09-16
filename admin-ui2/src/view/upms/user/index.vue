@@ -81,7 +81,7 @@
           :target-keys="valueRoles"
           :list-style="listStyle"
           :titles="['可分配角色','已分配角色']"
-          :operations="['删除','分配']"
+          :operations="['移除','分配']"
           filterable
           @on-change="changeRole">
           <div :style="{float: 'right', margin: '5px'}">
