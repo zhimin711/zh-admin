@@ -80,21 +80,35 @@ public class VueRecordUtils {
     }
 
     public static List<Permission> convertTreePermission(List<Permission> records) {
+        return convertTreePermission(records, PermissionType.ALL);
+    }
+
+    public static List<VueRecord> convertTree(List<Permission> records) {
+        return com.ch.utils.VueRecordUtils.covertIdTree(convertTreePermission(records));
+    }
+
+    public static List<Permission> convertTreePermission(List<Permission> records, PermissionType permissionType) {
         Map<String, List<Permission>> permissionMap = records.parallelStream().collect(Collectors.groupingBy(Permission::getParentId));
         permissionMap.forEach((k, v) -> {
             v.sort(Comparator.comparing(Permission::getSort));
             v.forEach(r -> {
                 String pid = StringExtUtils.linkStrIgnoreZero(Constants.SEPARATOR_2, r.getParentId(), r.getId().toString());
                 if (permissionMap.get(pid) != null) {
-                    r.setChildren(permissionMap.get(pid));
+                    PermissionType currType = PermissionType.from(r.getType());
+                    if (permissionType == PermissionType.ALL || permissionType == PermissionType.BUTTON) {
+                        r.setChildren(permissionMap.get(pid));
+                    } else if (permissionType == PermissionType.MENU && currType == PermissionType.CATALOG) {
+                        r.setChildren(permissionMap.get(pid));
+                    } else if (permissionType == PermissionType.CATALOG && currType == PermissionType.CATALOG) {
+                        List<Permission> childCatalog = permissionMap.get(pid).stream()
+                                .filter(e -> PermissionType.from(e.getType()) == PermissionType.CATALOG)
+                                .collect(Collectors.toList());
+                        r.setChildren(childCatalog);
+                    }
                 }
             });
         });
 
         return permissionMap.get(StatusS.BEGIN);
-    }
-
-    public static List<VueRecord> convertTree(List<Permission> records) {
-        return com.ch.utils.VueRecordUtils.covertIdTree(convertTreePermission(records));
     }
 }

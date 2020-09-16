@@ -1,15 +1,19 @@
 package com.zh.cloud.admin.controller;
 
+import com.ch.e.PubError;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
+import com.ch.utils.ExceptionUtils;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.zh.cloud.admin.model.BaseModel;
+import com.zh.cloud.admin.model.upms.Role;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +43,7 @@ public class LoginController {
      * @return token
      */
     @PostMapping(value = "/login")
-    public Result<String> login(@RequestBody User user, @PathVariable String env) {
+    public Result<?> login(@RequestBody User user, @PathVariable String env) {
         return ResultUtils.wrapFail(() -> {
             User loginUser = userService.find4Login(user.getUsername(), user.getPassword());
             String token = UUID.randomUUID().toString();
@@ -56,9 +60,19 @@ public class LoginController {
      * @return 用户信息
      */
     @GetMapping(value = "/login/user")
-    public Result<User> loginUser(@RequestParam String token, @PathVariable String env) {
+    public Result<?> loginUser(@RequestParam String token, @PathVariable String env) {
         return ResultUtils.wrapFail(() -> {
-            return loginUsers.getIfPresent(token);
+            User user = loginUsers.getIfPresent(token);
+            if (user == null) ExceptionUtils._throw(PubError.INVALID);
+            List<Role> roles = userService.findRoles(user.getId());
+            if (!roles.isEmpty()) {
+                Role role = null;
+                for (Role r : roles) {
+                    if (role == null) role = r;
+
+                }
+            }
+            return user;
         });
     }
 

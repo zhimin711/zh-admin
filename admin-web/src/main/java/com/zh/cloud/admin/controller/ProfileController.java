@@ -1,5 +1,6 @@
 package com.zh.cloud.admin.controller;
 
+import com.ch.result.Result;
 import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
@@ -28,8 +29,8 @@ public class ProfileController {
      * @param env   环境变量
      * @return 用户信息
      */
-    @GetMapping(value = "/{id}")
-    public BaseModel<User> info(@RequestParam String token, @PathVariable String env, @PathVariable Long id) {
+    @GetMapping(value = "/user")
+    public BaseModel<User> info(@RequestParam String token, @PathVariable String env) {
         User user = LoginController.loginUsers.getIfPresent(token);
         if (user != null) {
             return BaseModel.getInstance(user);
@@ -48,7 +49,7 @@ public class ProfileController {
      * @param httpServletRequest httpServletRequest
      * @return 是否成功
      */
-    @PutMapping(value = "")
+    @PutMapping(value = "/user")
     public BaseModel<String> update(@RequestBody User user, @PathVariable String env,
                                     HttpServletRequest httpServletRequest) {
         userService.update(user);

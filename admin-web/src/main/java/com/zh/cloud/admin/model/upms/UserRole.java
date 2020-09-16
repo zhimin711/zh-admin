@@ -39,7 +39,9 @@ public class UserRole extends Model {
     @Id
     @Column(name = "role_id")
     private Long roleId;
-
+    /**
+     * 是否为默认角色：0否 1是
+     */
     private String status;
 
     public UserRole(Long userId, Long roleId, String status) {

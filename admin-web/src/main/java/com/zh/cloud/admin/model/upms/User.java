@@ -25,7 +25,7 @@ import javax.persistence.Transient;
 @Table(name = "st_user")
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="User对象", description="后台用户表")
+@ApiModel(value = "User对象", description = "后台用户表")
 public class User extends Model {
 
     public static final UserFinder find = new UserFinder();
@@ -40,14 +40,6 @@ public class User extends Model {
         }
 
     }
-
-//    private String roles;
-//    private String introduction;
-//    private String avatar;
-//    private String name;
-
-//    @Transient
-//    private String oldPassword;
 
     @ApiModelProperty(value = "主键ID")
     @Id
@@ -115,6 +107,15 @@ public class User extends Model {
     @ApiModelProperty(value = "更新人")
     private String updateBy;
 
+
+    @Transient
+    private Long roleId;
+//    private String introduction;
+//    private String avatar;
+//    private String name;
+
+    //    @Transient
+//    private String oldPassword;
     @Transient
     private String department;
 //    @Transient

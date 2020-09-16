@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.service.UserService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -84,6 +81,9 @@ public class UserServiceImpl implements UserService {
     public List<Role> findRoles(Long userId) {
         List<UserRole> list = findUserRoles(userId);
         if (list.isEmpty()) return Lists.newArrayList();
+        if (list.size() > 1) {
+            list.sort(Comparator.comparing(UserRole::getStatus));
+        }
         return list.stream().map(UserRole::getRole).filter(Objects::nonNull).collect(Collectors.toList());
     }
 

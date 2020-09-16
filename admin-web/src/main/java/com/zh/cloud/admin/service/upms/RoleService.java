@@ -26,4 +26,5 @@ public interface RoleService {
     List<Permission> findPermissions(Long roleId);
 
     void savePermissions(Long roleId, List<Long> permissionIds);
+
 }
