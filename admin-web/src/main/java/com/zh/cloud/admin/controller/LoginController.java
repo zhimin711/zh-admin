@@ -6,12 +6,16 @@ import com.ch.result.ResultUtils;
 import com.ch.utils.ExceptionUtils;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.zh.cloud.admin.et.PermissionType;
 import com.zh.cloud.admin.model.BaseModel;
+import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.model.upms.Role;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.pojo.RoleVo;
 import com.zh.cloud.admin.pojo.UserVo;
 import com.zh.cloud.admin.service.UserService;
+import com.zh.cloud.admin.service.upms.RoleService;
+import com.zh.cloud.admin.utils.VueRecordUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +41,8 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 用户登录
@@ -70,11 +76,50 @@ public class LoginController {
             Role role = userService.findDefaultRole(user.getId());
             user.setRoleId(role.getId());
             loginUsers.put(token, user);
+
             UserVo userVo = new UserVo();
             BeanUtils.copyProperties(user, userVo);
             userVo.setAvatar("https://lzy-file.oss-cn-shenzhen.aliyuncs.com/2018/11/18/18/47/8e4227d68b74444bb5e77b460e1696ca.jpg");
             userVo.setRole(new RoleVo(role.getId(), role.getCode(), role.getName()));
             return userVo;
+        });
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param token token
+     * @param env   环境变量
+     * @return 用户信息
+     */
+    @GetMapping(value = "/login/menus")
+    public Result<?> menus(@RequestParam String token, @PathVariable String env) {
+        return ResultUtils.wrapList(() -> {
+            User user = LoginController.loginUsers.getIfPresent(token);
+            if (user == null) {
+                ExceptionUtils._throw(PubError.INVALID);
+            }
+            List<Permission> permissions = roleService.findPermissions(user.getRoleId());
+            return VueRecordUtils.convertTreePermission(permissions, PermissionType.MENU);
+        });
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param token token
+     * @param env   环境变量
+     * @return 用户信息
+     */
+    @GetMapping(value = "/login/permissions")
+    public Result<?> permissions(@RequestParam String token, @PathVariable String env) {
+        return ResultUtils.wrapList(() -> {
+            User user = LoginController.loginUsers.getIfPresent(token);
+            if (user == null) {
+                ExceptionUtils._throw(PubError.INVALID);
+            }
+            List<Permission> permissions = roleService.findPermissions(user.getRoleId());
+            return VueRecordUtils.convert(permissions, PermissionType.BUTTON);
         });
     }
 
