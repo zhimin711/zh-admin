@@ -20,12 +20,12 @@
       </Form>
       <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch" :loading="loading">{{ $t('searchText') }}</Button>
       <Button style="margin: 5px 3px;" icon="md-refresh" @click="pq.params = {}">{{ $t('resetText') }}</Button>
-      <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
+      <Button v-permission="['upmsPositionAdd']" style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
       <Table ref="tables" :data="tableData" :columns="columns" :loading="loading">
         <template slot-scope="{ row, index }" slot="action">
           <ButtonGroup size="small">
-            <Button icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
-            <Button icon="ios-close" @click="handleDelete(row,index)">删除</Button>
+            <Button v-permission="['upmsPositionEdit']" icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
+            <Button v-permission="['upmsPositionDel']" icon="ios-close" @click="handleDelete(row,index)">删除</Button>
           </ButtonGroup>
         </template>
       </Table>

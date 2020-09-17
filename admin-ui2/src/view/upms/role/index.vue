@@ -20,13 +20,13 @@
       </Form>
       <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch" :loading="loading">{{ $t('searchText') }}</Button>
       <Button style="margin: 5px 3px;" icon="md-refresh" @click="pq.params = {}">{{ $t('resetText') }}</Button>
-      <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
-      <Button style="margin: 5px 3px;" type="success" icon="md-lock" @click="handlePermission" :disabled="selectRows.length!==1">分配权限</Button>
+      <Button v-permission="['upmsRoleAdd']" style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
+      <Button v-permission="['upmsRolePermission']" style="margin: 5px 3px;" type="success" icon="md-lock" @click="handlePermission" :disabled="selectRows.length!==1">分配权限</Button>
       <Table ref="tables" :data="tableData" :columns="columns" :loading="loading" @on-select="handleSelect" @on-select-cancel="handleSelect">
         <template slot-scope="{ row, index }" slot="action">
           <ButtonGroup v-if="row.id !== 1" size="small">
-            <Button icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
-            <Button icon="ios-close" @click="handleDelete(row,index)">删除</Button>
+            <Button v-permission="['upmsRoleEdit']" icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
+            <Button v-permission="['upmsRoleDel']" icon="ios-close" @click="handleDelete(row,index)">删除</Button>
           </ButtonGroup>
         </template>
       </Table>

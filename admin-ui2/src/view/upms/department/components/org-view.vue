@@ -20,38 +20,34 @@
 
 <script>
 import { on, off } from '@/libs/tools'
-const menuRootList = [
-  {
-    key: 'edit',
-    label: '编辑部门'
-  },
-  {
-    key: 'detail',
-    label: '查看部门'
-  },
-  {
-    key: 'new',
-    label: '新增子部门'
-  }
-]
+import checkPermission from '@/libs/permission'
+
 const menuList = [
   {
     key: 'edit',
+    code: 'upmsDepartmentEdit',
     label: '编辑部门'
   },
   {
     key: 'detail',
+    code: 'upmsDepartmentDetail',
     label: '查看部门'
   },
   {
     key: 'new',
+    code: 'upmsDepartmentAdd',
     label: '新增子部门'
   },
   {
     key: 'delete',
+    code: 'upmsDepartmentDel',
     label: '删除部门'
   }
 ]
+const nonMenu = {
+  key: 'null',
+  label: '无操作权限'
+}
 export default {
   name: 'OrgView',
   props: {
@@ -99,7 +95,14 @@ export default {
         : ''
     },
     nodeRender (h, data) {
-      const tempMenuList = data.isRoot ? menuRootList : menuList
+      const tempMenuList = [] // data.isRoot ? menuRootList : menuList
+      menuList.forEach(item => {
+        if (data.isRoot && item.key === 'delete') {
+        } else if (checkPermission(item.code)) {
+          tempMenuList.push(item)
+        }
+      })
+      if (tempMenuList.length === 0) tempMenuList.push(nonMenu)
       return (
         <div
           class={[
