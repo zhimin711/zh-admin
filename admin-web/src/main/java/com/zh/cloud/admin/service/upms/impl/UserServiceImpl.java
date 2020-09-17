@@ -1,5 +1,6 @@
 package com.zh.cloud.admin.service.upms.impl;
 
+import com.ch.Constants;
 import com.ch.NumS;
 import com.ch.StatusS;
 import com.ch.e.PubError;
@@ -103,7 +104,7 @@ public class UserServiceImpl implements UserService {
         List<UserRole> list = findUserRoles(uid);
         if (CommonUtils.isEmpty(roleIds)) {
             list.forEach(r -> {
-                if (CommonUtils.isEquals(r.getRoleId(), 1L)) {
+                if (CommonUtils.isEquals(r.getRoleId(), Constants.SUPER_ID)) {
                     return;
                 }
                 r.delete();
@@ -115,7 +116,7 @@ public class UserServiceImpl implements UserService {
         boolean nonDefault = list.isEmpty() || list.parallelStream().noneMatch(e -> CommonUtils.isEquals(StatusS.SELECTED, e.getStatus()));
         for (Long rid : roleIds) {
             roleMap.remove(rid);
-            if (CommonUtils.isEquals(rid, 1L)) {
+            if (CommonUtils.isEquals(rid, Constants.SUPER_ID)) {
                 return;
             }
             UserRoleKey userRolekey = new UserRoleKey(uid, rid);
@@ -136,7 +137,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         if (!roleMap.isEmpty()) roleMap.forEach((k, v) -> {
-            if (CommonUtils.isEquals(v.getRoleId(), 1L)) {
+            if (CommonUtils.isEquals(v.getRoleId(), Constants.SUPER_ID)) {
                 return;
             }
             v.delete();
