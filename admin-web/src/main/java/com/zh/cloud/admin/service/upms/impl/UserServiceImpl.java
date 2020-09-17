@@ -124,4 +124,13 @@ public class UserServiceImpl implements UserService {
         if (!roleMap.isEmpty()) roleMap.forEach((k, v) -> v.delete());
     }
 
+    @Override
+    public Role findDefaultRole(Long userId) {
+        List<UserRole> records = UserRole.find.query().fetch("role").where().eq("userId", userId).eq("status", StatusS.SELECTED).findList();
+        if (CommonUtils.isEmpty(records)) {
+            records = this.findUserRoles(userId);
+        }
+        return CommonUtils.isEmpty(records) ? null : records.get(0).getRole();
+    }
+
 }

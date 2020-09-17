@@ -46,8 +46,7 @@ public class HomeController {
             if (user == null) {
                 ExceptionUtils._throw(PubError.INVALID);
             }
-
-            List<Permission> permissions = roleService.findPermissions(6L);
+            List<Permission> permissions = roleService.findPermissions(user.getRoleId());
             return VueRecordUtils.convertTreePermission(permissions, PermissionType.MENU);
         });
     }
@@ -61,9 +60,14 @@ public class HomeController {
      */
     @GetMapping(value = "/permissions")
     public Result<?> permissions(@RequestParam String token, @PathVariable String env) {
-        User user = LoginController.loginUsers.getIfPresent(token);
-
-        return null;
+        return ResultUtils.wrapList(() -> {
+            User user = LoginController.loginUsers.getIfPresent(token);
+            if (user == null) {
+                ExceptionUtils._throw(PubError.INVALID);
+            }
+            List<Permission> permissions = roleService.findPermissions(user.getRoleId());
+            return VueRecordUtils.convert(permissions, PermissionType.BUTTON);
+        });
     }
 
 }

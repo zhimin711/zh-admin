@@ -22,4 +22,6 @@ public interface UserService {
     List<Role> findRoles(Long userId);
 
     void saveRoles(Long id, List<Long> roleIds);
+
+    Role findDefaultRole(Long id);
 }

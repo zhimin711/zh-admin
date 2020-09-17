@@ -9,7 +9,10 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.upms.Role;
 import com.zh.cloud.admin.model.upms.User;
+import com.zh.cloud.admin.pojo.RoleVo;
+import com.zh.cloud.admin.pojo.UserVo;
 import com.zh.cloud.admin.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,15 +67,14 @@ public class LoginController {
         return ResultUtils.wrapFail(() -> {
             User user = loginUsers.getIfPresent(token);
             if (user == null) ExceptionUtils._throw(PubError.INVALID);
-            List<Role> roles = userService.findRoles(user.getId());
-            if (!roles.isEmpty()) {
-                Role role = null;
-                for (Role r : roles) {
-                    if (role == null) role = r;
-
-                }
-            }
-            return user;
+            Role role = userService.findDefaultRole(user.getId());
+            user.setRoleId(role.getId());
+            loginUsers.put(token, user);
+            UserVo userVo = new UserVo();
+            BeanUtils.copyProperties(user, userVo);
+            userVo.setAvatar("https://lzy-file.oss-cn-shenzhen.aliyuncs.com/2018/11/18/18/47/8e4227d68b74444bb5e77b460e1696ca.jpg");
+            userVo.setRole(new RoleVo(role.getId(), role.getCode(), role.getName()));
+            return userVo;
         });
     }
 

@@ -111,4 +111,10 @@ public class VueRecordUtils {
 
         return permissionMap.get(StatusS.BEGIN);
     }
+
+    public static List<VueRecord> convert(List<Permission> permissions, final PermissionType permissionType) {
+        return permissions.parallelStream()
+                .filter(r -> PermissionType.from(r.getType()) == permissionType)
+                .map(r -> new VueRecord(r.getCode(), r.getName())).collect(Collectors.toList());
+    }
 }
