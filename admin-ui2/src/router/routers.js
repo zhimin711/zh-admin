@@ -125,11 +125,12 @@ export function assembleMenus (menus) {
     if (route) {
       route.meta.title = item.name
       if (item.icon) route.meta.icon = item.icon
+      if (item.hidden) route.meta.hideInMenu = true
+      if (item.children && item.children.length > 0) {
+        route.children = assembleMenus(item.children)
+      }
+      routers.push(route)
     }
-    if (item.children && item.children.length > 0) {
-      route.children = assembleMenus(item.children)
-    }
-    routers.push(route)
   })
   return routers
 }
@@ -150,7 +151,7 @@ export function assembleMenus (menus) {
  * }
  */
 
-export default [
+const constantRoutes =  [
   {
     path: '/login',
     name: 'login',
@@ -259,3 +260,5 @@ export default [
     component: () => import('@/view/error-page/404.vue')
   } */
 ]
+
+export default constantRoutes

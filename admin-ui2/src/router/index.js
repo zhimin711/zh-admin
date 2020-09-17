@@ -8,10 +8,20 @@ import config from '@/config'
 const { homeName } = config
 
 Vue.use(Router)
-const router = new Router({
-  routes,
-  mode: 'history'
+
+const createRouter = () => new Router({
+  mode: 'history', // require service support
+  // scrollBehavior: () => ({ y: 0 }),
+  routes
 })
+
+const router = createRouter()
+
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
+
 const LOGIN_PAGE_NAME = 'login'
 
 const turnTo = (to, access, next) => {
@@ -61,7 +71,7 @@ router.beforeEach((to, from, next) => {
         // await store.dispatch('getUserPermissions', user.role.id)
 
         // turnTo(to, user.access, next)
-        next({ ...to, replace: true })
+        next()
       }).catch((err) => {
         console.log(err)
         iView.Modal.warning({

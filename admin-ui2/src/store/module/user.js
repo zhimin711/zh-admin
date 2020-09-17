@@ -14,6 +14,7 @@ import {
   getUnreadCount
 } from '@/api/message'
 import { setToken, getToken } from '@/libs/util'
+import { resetRouter } from '@/router'
 
 export default {
   state: {
@@ -108,6 +109,8 @@ export default {
           commit('setToken', '')
           commit('setAccess', [])
           commit('setHasGetInfo', false)
+          commit('setPermissionList', [])
+          resetRouter()
           resolve()
         }).catch(err => {
           reject(err)
