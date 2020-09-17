@@ -119,7 +119,7 @@ const definedRoutes = {
 
 export function assembleMenus (menus) {
   let routers = []
-  if(asyncRoutes) routers = []
+  if (asyncRoutes) routers = []
   menus.forEach(item => {
     let route = definedRoutes[item.code]
     if (route) {
@@ -151,7 +151,7 @@ export function assembleMenus (menus) {
  * }
  */
 
-const constantRoutes =  [
+const constantRoutes = [
   {
     path: '/login',
     name: 'login',
@@ -250,7 +250,7 @@ const constantRoutes =  [
       hideInMenu: true
     },
     component: () => import('@/view/error-page/500.vue')
-  }/*,
+  },
   {
     path: '*',
     name: 'error_404',
@@ -258,7 +258,7 @@ const constantRoutes =  [
       hideInMenu: true
     },
     component: () => import('@/view/error-page/404.vue')
-  } */
+  }
 ]
 
 export default constantRoutes

@@ -24,7 +24,7 @@
       <Button style="margin: 5px 3px;" type="success" icon="md-lock" @click="handlePermission" :disabled="selectRows.length!==1">分配权限</Button>
       <Table ref="tables" :data="tableData" :columns="columns" :loading="loading" @on-select="handleSelect" @on-select-cancel="handleSelect">
         <template slot-scope="{ row, index }" slot="action">
-          <ButtonGroup size="small">
+          <ButtonGroup v-if="row.id !== 1" size="small">
             <Button icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
             <Button icon="ios-close" @click="handleDelete(row,index)">删除</Button>
           </ButtonGroup>
@@ -128,6 +128,7 @@ export default {
       recordModal: false,
       recordModalType: 'add',
       disabledProps: {
+        all: false,
         code: false
       },
       record: {},
@@ -174,6 +175,9 @@ export default {
     },
     handlePermission () {
       if (this.selectRows.length !== 1) {
+        return
+      } else if (this.selectRows[0].id === 1) {
+        this.$Message.warning('超级拥有所有权，无需分配！')
         return
       }
       this.permissionModal = true

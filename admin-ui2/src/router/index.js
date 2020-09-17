@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import routes, { assembleMenus } from './routers'
 import store from '@/store'
 import iView from 'iview'
-import { setToken, getToken, canTurnTo, setTitle } from '@/libs/util'
+import { setToken, getToken, setTitle } from '@/libs/util'
 import config from '@/config'
 const { homeName } = config
 
@@ -17,17 +17,12 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
-export function resetRouter() {
+export function resetRouter () {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
 
 const LOGIN_PAGE_NAME = 'login'
-
-const turnTo = (to, access, next) => {
-  if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问
-  else next({ replace: true, name: 'error_401' }) // 无权限，重定向到401页面
-}
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
@@ -57,21 +52,13 @@ router.beforeEach((to, from, next) => {
         const menus = await store.dispatch('getUserMenus', user.role.id)
         // dynamically add accessible routes
         const accessRoutes = assembleMenus(menus)
-        accessRoutes.push({
-          path: '*',
-          name: 'error_404',
-          meta: {
-            hideInMenu: true
-          },
-          component: () => import('@/view/error-page/404.vue')
-        })
         router.addRoutes(accessRoutes)
         await store.dispatch('setMenus', accessRoutes)
 
         // await store.dispatch('getUserPermissions', user.role.id)
 
         // turnTo(to, user.access, next)
-        next()
+        router.push(to.path)
       }).catch((err) => {
         console.log(err)
         iView.Modal.warning({
