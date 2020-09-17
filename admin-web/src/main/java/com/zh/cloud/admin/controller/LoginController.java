@@ -1,9 +1,12 @@
 package com.zh.cloud.admin.controller;
 
+import com.ch.Constants;
 import com.ch.e.PubError;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
+import com.ch.utils.CommonUtils;
 import com.ch.utils.ExceptionUtils;
+import com.ch.utils.JSONUtils;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.zh.cloud.admin.et.PermissionType;
@@ -14,6 +17,7 @@ import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.pojo.RoleVo;
 import com.zh.cloud.admin.pojo.UserVo;
 import com.zh.cloud.admin.service.UserService;
+import com.zh.cloud.admin.service.upms.PermissionService;
 import com.zh.cloud.admin.service.upms.RoleService;
 import com.zh.cloud.admin.utils.VueRecordUtils;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +47,8 @@ public class LoginController {
     private UserService userService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private PermissionService permissionService;
 
     /**
      * 用户登录
@@ -99,7 +105,12 @@ public class LoginController {
             if (user == null) {
                 ExceptionUtils._throw(PubError.INVALID);
             }
-            List<Permission> permissions = roleService.findPermissions(user.getRoleId());
+            List<Permission> permissions;
+            if (CommonUtils.isEquals(user.getRoleId(), Constants.SUPER_ID)) {
+                permissions = permissionService.findAll();
+            } else {
+                permissions = roleService.findPermissions(user.getRoleId());
+            }
             return VueRecordUtils.convertTreePermission(permissions, PermissionType.MENU);
         });
     }
@@ -118,8 +129,14 @@ public class LoginController {
             if (user == null) {
                 ExceptionUtils._throw(PubError.INVALID);
             }
-            List<Permission> permissions = roleService.findPermissions(user.getRoleId());
-            return VueRecordUtils.convert(permissions, PermissionType.BUTTON);
+            List<Permission> permissions;
+            if (CommonUtils.isEquals(user.getRoleId(), Constants.SUPER_ID)) {
+                permissions = permissionService.findAllByType(PermissionType.BUTTON);
+            } else {
+                permissions = roleService.findPermissions(user.getRoleId());
+            }
+
+            return JSONUtils.convertList(permissions, com.ch.utils.VueRecordUtils.KEY_CODE_NAME_CHILDREN, com.ch.utils.VueRecordUtils.KEY_CODE_NAME_CHILDREN);
         });
     }
 

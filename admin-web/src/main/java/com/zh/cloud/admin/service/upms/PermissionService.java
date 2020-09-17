@@ -2,6 +2,7 @@ package com.zh.cloud.admin.service.upms;
 
 import com.ch.Status;
 import com.ch.result.InvokerPage;
+import com.zh.cloud.admin.et.PermissionType;
 import com.zh.cloud.admin.model.upms.Permission;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface PermissionService {
     List<Permission> findTreeByTypeAndStatus(String type, Status status);
 
     List<Permission> findAll();
+
+    List<Permission> findAllByType(PermissionType permissionType);
 }

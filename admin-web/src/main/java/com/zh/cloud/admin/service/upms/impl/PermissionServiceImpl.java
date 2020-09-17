@@ -90,6 +90,15 @@ public class PermissionServiceImpl implements PermissionService {
         return Permission.find.all();
     }
 
+    @Override
+    public List<Permission> findAllByType(PermissionType permissionType) {
+        Query<Permission> query = Permission.find.query();
+        if (permissionType == PermissionType.ALL) {
+            return Lists.newArrayList();
+        }
+        return query.where().eq("type", permissionType.getCode()).findList();
+    }
+
     private Query<Permission> getBaseQuery(Permission record) {
         Query<Permission> query = Permission.find.query();
         QueryUtils.eq(query, record);
