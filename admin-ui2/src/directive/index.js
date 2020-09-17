@@ -19,6 +19,10 @@ const importDirective = Vue => {
    * }
    */
   Vue.directive('clipboard', directive.clipboard)
+  /**
+   * permission指令 v-permission="['upms']"
+   */
+  Vue.directive('permission', directive.permission)
 }
 
 export default importDirective

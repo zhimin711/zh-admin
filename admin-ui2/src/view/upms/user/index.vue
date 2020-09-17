@@ -13,13 +13,13 @@
       </Form>
       <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch">{{ $t('searchText') }}</Button>
       <Button style="margin: 5px 3px;" icon="md-refresh" @click="pq.params = {}">{{ $t('resetText') }}</Button>
-      <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
-      <Button style="margin: 5px 3px;" type="success" icon="md-people" @click="handleRoles" :disabled="selectRows.length!==1">分配角色</Button>
+      <Button v-permission="['upmsUserAdd']" style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
+      <Button v-permission="['upmsUserRole']" style="margin: 5px 3px;" type="success" icon="md-people" @click="handleRoles" :disabled="selectRows.length!==1">分配角色</Button>
       <Table ref="tables" :data="tableData" :columns="columns" @on-select="handleSelect" @on-select-cancel="handleSelect">
         <template slot-scope="{ row, index }" slot="action">
           <ButtonGroup size="small">
-            <Button icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
-            <Button icon="ios-remove" @click="handleDelete(row,index)">删除</Button>
+            <Button v-permission="['upmsUserEdit']" icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
+            <Button v-permission="['upmsUserDel']"  icon="ios-remove" @click="handleDelete(row,index)">删除</Button>
           </ButtonGroup>
         </template>
       </Table>

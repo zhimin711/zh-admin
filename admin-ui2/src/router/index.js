@@ -55,7 +55,7 @@ router.beforeEach((to, from, next) => {
         router.addRoutes(accessRoutes)
         await store.dispatch('setMenus', accessRoutes)
 
-        // await store.dispatch('getUserPermissions', user.role.id)
+        await store.dispatch('getUserPermissions', user.role.id)
 
         // turnTo(to, user.access, next)
         router.push(to.path)
