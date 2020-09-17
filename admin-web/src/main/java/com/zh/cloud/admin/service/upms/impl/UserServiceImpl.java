@@ -92,11 +92,22 @@ public class UserServiceImpl implements UserService {
         return UserRole.find.query().fetch("role").where().eq("userId", userId).findList();
     }
 
+    /**
+     * 角色ID为1是超级管理员且不允许分配
+     *
+     * @param uid     用户ID
+     * @param roleIds 角色Id集合
+     */
     @Override
     public void saveRoles(Long uid, List<Long> roleIds) {
         List<UserRole> list = findUserRoles(uid);
         if (CommonUtils.isEmpty(roleIds)) {
-            list.forEach(UserRole::delete);
+            list.forEach(r -> {
+                if (CommonUtils.isEquals(r.getRoleId(), 1L)) {
+                    return;
+                }
+                r.delete();
+            });
             return;
         }
         Map<Long, UserRole> roleMap = list.parallelStream().collect(Collectors.toMap(UserRole::getRoleId, Function.identity()));
@@ -104,6 +115,9 @@ public class UserServiceImpl implements UserService {
         boolean nonDefault = list.isEmpty() || list.parallelStream().noneMatch(e -> CommonUtils.isEquals(StatusS.SELECTED, e.getStatus()));
         for (Long rid : roleIds) {
             roleMap.remove(rid);
+            if (CommonUtils.isEquals(rid, 1L)) {
+                return;
+            }
             UserRoleKey userRolekey = new UserRoleKey(uid, rid);
             UserRole ur = UserRole.find.byId(userRolekey);
             if (ur != null) {
@@ -121,7 +135,12 @@ public class UserServiceImpl implements UserService {
                 new UserRole(uid, rid, StatusS.UNSELECTED).save();
             }
         }
-        if (!roleMap.isEmpty()) roleMap.forEach((k, v) -> v.delete());
+        if (!roleMap.isEmpty()) roleMap.forEach((k, v) -> {
+            if (CommonUtils.isEquals(v.getRoleId(), 1L)) {
+                return;
+            }
+            v.delete();
+        });
     }
 
     @Override
