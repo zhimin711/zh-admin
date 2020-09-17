@@ -1,7 +1,9 @@
 import {
   login,
   logout,
-  getUserInfo
+  getUserInfo,
+  getUserMenus,
+  getUserPermissions
 } from '@/api/login'
 import {
   getMessage,
@@ -22,6 +24,7 @@ export default {
     access: '',
     hasGetInfo: false,
     unreadCount: 0,
+    permissionList: [],
     messageUnreadList: [],
     messageReadedList: [],
     messageTrashList: [],
@@ -46,6 +49,9 @@ export default {
     },
     setHasGetInfo (state, status) {
       state.hasGetInfo = status
+    },
+    setPermissionList (state, list) {
+      state.permissionList = list
     },
     setMessageCount (state, count) {
       state.unreadCount = count
@@ -101,6 +107,7 @@ export default {
         logout(state.token).then(() => {
           commit('setToken', '')
           commit('setAccess', [])
+          commit('setHasGetInfo', false)
           resolve()
         }).catch(err => {
           reject(err)
@@ -125,6 +132,45 @@ export default {
               commit('setAccess', [data.name])
               commit('setHasGetInfo', true)
               resolve(data)
+            } else {
+              reject(res.data)
+            }
+          }).catch(err => {
+            reject(err)
+          })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    },
+    // 获取用户相关信息
+    getUserMenus ({ state, commit }) {
+      return new Promise((resolve, reject) => {
+        try {
+          getUserMenus(state.token).then(res => {
+            const { data } = res
+            if (data.success) {
+              resolve(data.rows)
+            } else {
+              reject(res.data)
+            }
+          }).catch(err => {
+            reject(err)
+          })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    },
+    // 获取用户相关信息
+    getUserPermissions ({ state, commit }) {
+      return new Promise((resolve, reject) => {
+        try {
+          getUserPermissions(state.token).then(res => {
+            const { data } = res
+            if (data.success) {
+              commit('setPermissionList', data.rows)
+              resolve()
             } else {
               reject(res.data)
             }

@@ -13,7 +13,6 @@ import {
 } from '@/libs/util'
 import { saveErrorLogger } from '@/api/data'
 import router from '@/router'
-import routers from '@/router/routers'
 import config from '@/config'
 const { homeName } = config
 
@@ -29,18 +28,22 @@ export default {
   state: {
     breadCrumbList: [],
     tagNavList: [],
+    routeList: [],
     homeRoute: {},
     local: localRead('local'),
     errorList: [],
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
+    menuList: (state, getters, rootState) => getMenuByRouter(state.routeList, rootState.user.access),
     errorCount: state => state.errorList.length
   },
   mutations: {
     setBreadCrumb (state, route) {
       state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)
+    },
+    setRouteList (state, routes) {
+      state.routeList = routes
     },
     setHomeRoute (state, routes) {
       state.homeRoute = getHomeRoute(routes, homeName)
@@ -100,6 +103,17 @@ export default {
       }
       saveErrorLogger(info).then(() => {
         commit('addError', data)
+      })
+    },
+    // 获取用户相关信息
+    setMenus ({ state, commit }, routers) {
+      return new Promise((resolve, reject) => {
+        try {
+          commit('setRouteList', routers)
+          resolve()
+        } catch (error) {
+          reject(error)
+        }
       })
     }
   }

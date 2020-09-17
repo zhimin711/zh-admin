@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import routes from './routers'
+import routes, { assembleMenus } from './routers'
 import store from '@/store'
 import iView from 'iview'
 import { setToken, getToken, canTurnTo, setTitle } from '@/libs/util'
@@ -37,12 +37,33 @@ router.beforeEach((to, from, next) => {
     })
   } else {
     if (store.state.user.hasGetInfo) {
-      turnTo(to, store.state.user.access, next)
+      next()
+      // turnTo(to, store.state.user.access, next)
     } else {
-      store.dispatch('getUserInfo').then(user => {
+      // get user info
+      store.dispatch('getUserInfo').then(async (user) => {
         // 拉取用户信息，通过用户权限和跳转的页面的name来判断是否有权限访问;access必须是一个数组，如：['super_admin'] ['super_admin', 'admin']
-        turnTo(to, user.access, next)
-      }).catch(() => {
+
+        const menus = await store.dispatch('getUserMenus', user.role.id)
+        // dynamically add accessible routes
+        const accessRoutes = assembleMenus(menus)
+        accessRoutes.push({
+          path: '*',
+          name: 'error_404',
+          meta: {
+            hideInMenu: true
+          },
+          component: () => import('@/view/error-page/404.vue')
+        })
+        router.addRoutes(accessRoutes)
+        await store.dispatch('setMenus', accessRoutes)
+
+        // await store.dispatch('getUserPermissions', user.role.id)
+
+        // turnTo(to, user.access, next)
+        next({ ...to, replace: true })
+      }).catch((err) => {
+        console.log(err)
         iView.Modal.warning({
           title: '登录过期',
           content: '登录已失效,请重新登录',

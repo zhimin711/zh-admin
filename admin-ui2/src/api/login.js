@@ -22,6 +22,26 @@ export const getUserInfo = (token) => {
   })
 }
 
+export const getUserMenus = (token) => {
+  return axios.request({
+    url: 'login/menus',
+    params: {
+      token
+    },
+    method: 'get'
+  })
+}
+
+export const getUserPermissions = (token) => {
+  return axios.request({
+    url: 'login/permissions',
+    params: {
+      token
+    },
+    method: 'get'
+  })
+}
+
 export const logout = (token) => {
   return axios.request({
     url: 'logout',

@@ -39,6 +39,12 @@ class HttpRequest {
       if (!Object.keys(this.queue).length) {
         // Spin.show() // 不建议开启，因为界面不友好
       }
+      if (store.state.user.token) {
+        // let each request carry token
+        // ['X-Token'] is a custom headers key
+        // please modify it according to the actual situation
+        config.headers['X-Token'] = store.state.user.token
+      }
       this.queue[url] = true
       return config
     }, error => {
