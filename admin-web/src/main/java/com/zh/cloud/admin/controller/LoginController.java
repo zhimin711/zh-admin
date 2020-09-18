@@ -10,7 +10,6 @@ import com.ch.utils.JSONUtils;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.zh.cloud.admin.et.PermissionType;
-import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.model.upms.Role;
 import com.zh.cloud.admin.model.upms.User;
@@ -147,7 +146,7 @@ public class LoginController {
      * @return 是否成功
      */
     @PostMapping(value = "/logout")
-    public BaseModel<String> logout(@PathVariable String env) {
-        return BaseModel.getInstance("success");
+    public Result<?> logout(@PathVariable String env) {
+        return Result.success();
     }
 }
