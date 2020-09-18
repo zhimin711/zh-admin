@@ -66,15 +66,15 @@ router.beforeEach((to, from, next) => {
           content: '登录已失效,请重新登录',
           okText: '重新登录',
           onOk: () => {
-            // setToken('')
-            // next({
-            //   name: 'login'
-            // })
-            store.dispatch('handleLogOut').then(() => {
-              router.push({
-                name: 'login'
-              })
+            setToken('')
+            next({
+              name: 'login'
             })
+            // store.dispatch('handleLogOut').then(() => {
+            //   router.push({
+            //     name: 'login'
+            //   })
+            // })
           }
         })
       })
