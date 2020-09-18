@@ -18,5 +18,7 @@ public class PermissionRoles {
 
     private String method;
 
+    private List<Long> roleIds;
+
     private List<RoleVo> roles;
 }

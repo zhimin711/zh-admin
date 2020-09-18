@@ -1,15 +1,15 @@
 package com.zh.cloud.admin.config;
 
+import com.alibaba.fastjson.JSON;
 import com.ch.Constants;
 import com.ch.e.PubError;
 import com.ch.result.Result;
 import com.ch.utils.CommonUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.collect.Lists;
 import com.zh.cloud.admin.controller.LoginController;
 import com.zh.cloud.admin.et.PermissionType;
-import com.zh.cloud.admin.model.BaseModel;
 import com.zh.cloud.admin.model.upms.Permission;
 import com.zh.cloud.admin.model.upms.User;
 import com.zh.cloud.admin.security.PermissionRoles;
@@ -28,7 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 相关MVC拦截器配置
@@ -75,27 +77,22 @@ public class WebConfig implements WebMvcConfigurer {
 
             @Override
             public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-                                     Object o) throws Exception {
+                                     Object o) {
                 String token = httpServletRequest.getHeader("X-Token");
-                boolean valid = false;
-                if (token != null) {
-                    User user = LoginController.loginUsers.getIfPresent(token);
-                    if (user != null) {
+                if (CommonUtils.isEmpty(token)) {
+                    outError(httpServletResponse, Result.error(PubError.NOT_EXISTS, "Token 不存在！"));
+                    return false;
+                }
+                User user = LoginController.loginUsers.getIfPresent(token);
+                if (user == null) {
+                    outError(httpServletResponse, Result.error(PubError.EXPIRED, "Token 已过期！"));
+                    return false;
+                }
 //                        valid = true;
 //                        httpServletRequest.setAttribute("user", user);
-                        valid = checkPermission(httpServletRequest, user);
-                    }
-                }
+                boolean  valid = checkPermission(httpServletRequest, user);
                 if (!valid) {
-                    ObjectMapper mapper = new ObjectMapper();
-                    String json = mapper.writeValueAsString(Result.error(PubError.NOT_LOGIN));
-                    try {
-                        httpServletResponse.setContentType("application/json;charset=UTF-8");
-                        PrintWriter out = httpServletResponse.getWriter();
-                        out.print(json);
-                    } catch (Throwable e) {
-                        throw new RuntimeException(e);
-                    }
+                    outError(httpServletResponse, Result.error(PubError.NOT_AUTH,"角色未授权！"));
                     return false;
                 }
 
@@ -109,7 +106,6 @@ public class WebConfig implements WebMvcConfigurer {
     private static final String METHOD_ALL = "ALL";
 
     private boolean checkPermission(HttpServletRequest request, User user) {
-        log.info("request method: {}, url: {}", request.getMethod(), request.getRequestURI());
         if (CommonUtils.isEquals(user.getRoleId(), Constants.SUPER_ID)) {
             return true;
         }
@@ -117,19 +113,49 @@ public class WebConfig implements WebMvcConfigurer {
             initPermissions();
         }
         List<PermissionRoles> permissions2 = permissions.get(request.getMethod());
-        AntPathMatcher antPathMatcher = new AntPathMatcher();
-        if (CommonUtils.isNotEmpty(permissions2)) {
-            for (PermissionRoles permissionRoles : permissions2) {
+        List<PermissionRoles> permissions3 = permissions.get(METHOD_ALL);
+        if (CommonUtils.isEmpty(permissions2) || CommonUtils.isEmpty(permissions3)) {
+            return true;
+        }
+
+        AntPathMatcher pathMatcher = new AntPathMatcher("/");
+        String url = request.getRequestURI();
+        List<PermissionRoles> list = Lists.newArrayList(permissions2);
+        list.addAll(permissions3);
+        if (CommonUtils.isNotEmpty(list)) {
+            for (PermissionRoles permissionRoles : list) {
                 if (CommonUtils.isEmpty(permissionRoles.getUrl())) {
                     continue;
                 }
+                boolean ok = pathMatcher.match(permissionRoles.getUrl(), url);
+                if (ok) {
+                    return CommonUtils.isNotEmpty(permissionRoles.getRoleIds()) && permissionRoles.getRoleIds().contains(user.getRoleId());
+                }
             }
         }
-//        if(permissions.estimatedSize())
-        return false;
+        return true;
     }
 
     private void initPermissions() {
         List<Permission> permissionList = permissionService.findAllByType(PermissionType.BUTTON);
+        Map<String, List<PermissionRoles>> prMap = permissionList.parallelStream().map(r -> {
+            PermissionRoles pr = new PermissionRoles();
+            pr.setUrl(r.getUrl());
+            pr.setMethod(CommonUtils.isEmpty(r.getMethod()) ? METHOD_ALL : r.getMethod());
+            List<Long> ids = permissionService.findRoleIds(r.getId());
+            pr.setRoleIds(ids);
+            return pr;
+        }).collect(Collectors.groupingBy(PermissionRoles::getMethod));
+        permissions.putAll(prMap);
+    }
+
+    private void outError(HttpServletResponse httpServletResponse, Result<?> result) {
+        try {
+            httpServletResponse.setContentType("application/json;charset=UTF-8");
+            PrintWriter out = httpServletResponse.getWriter();
+            out.print(JSON.toJSON(result));
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 }

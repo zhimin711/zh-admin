@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
                 }
                 continue;
             }
-            if (nonDefault) {
+            if (nonDefault || roleIds.size() == 1) {
                 new UserRole(uid, rid, StatusS.SELECTED).save();
                 nonDefault = false;
             } else {

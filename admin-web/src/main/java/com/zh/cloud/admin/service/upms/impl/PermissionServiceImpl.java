@@ -11,6 +11,7 @@ import com.ch.utils.StringExtUtils;
 import com.google.common.collect.Lists;
 import com.zh.cloud.admin.et.PermissionType;
 import com.zh.cloud.admin.model.upms.Permission;
+import com.zh.cloud.admin.model.upms.RolePermission;
 import com.zh.cloud.admin.service.upms.PermissionService;
 import com.zh.cloud.admin.utils.QueryUtils;
 import io.ebean.PagedList;
@@ -97,6 +98,12 @@ public class PermissionServiceImpl implements PermissionService {
             return Lists.newArrayList();
         }
         return query.where().eq("type", permissionType.getCode()).findList();
+    }
+
+    @Override
+    public List<Long> findRoleIds(Long id) {
+        List<RolePermission> rolePermissions = RolePermission.find.query().where().eq("permissionId", id).findList();
+        return rolePermissions.parallelStream().map(RolePermission::getRoleId).collect(Collectors.toList());
     }
 
     private Query<Permission> getBaseQuery(Permission record) {

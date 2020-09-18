@@ -32,4 +32,6 @@ public interface PermissionService {
     List<Permission> findAll();
 
     List<Permission> findAllByType(PermissionType permissionType);
+
+    List<Long> findRoleIds(Long id);
 }

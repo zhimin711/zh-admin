@@ -83,8 +83,8 @@ public class Permission extends Model {
 //    @ApiModelProperty(value = "是否为系统权限(0.否 1.是)")
 //    private Boolean isSys;
 
-//    @ApiModelProperty(value = "请求方法")
-//    private String method;
+    @ApiModelProperty(value = "请求方法")
+    private String method;
 
     @ApiModelProperty(value = "状态: 0.禁用 1.启用")
     private String status;
