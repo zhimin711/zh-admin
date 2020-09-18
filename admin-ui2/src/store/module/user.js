@@ -111,6 +111,7 @@ export default {
           commit('setAccess', [])
           commit('setHasGetInfo', false)
           commit('setPermissionList', [])
+          localStorage.removeItem('tagNaveList')
           resetRouter()
           resolve()
         }).catch(err => {
