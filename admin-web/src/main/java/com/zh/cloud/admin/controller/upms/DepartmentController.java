@@ -131,4 +131,32 @@ public class DepartmentController {
             return VueRecordUtils.jsonValueLabelTreeByIdAndName(list);
         });
     }
+
+
+    /**
+     * 获取组织职位信息
+     *
+     * @param env 环境变量
+     * @param id  主键
+     * @return 信息
+     */
+    @GetMapping(value = "/{id:[0-9]+}/positions")
+    public Result<?> positions(@PathVariable String env, @PathVariable Long id) {
+        return ResultUtils.wrapList(() -> departmentService.findPositions(id));
+    }
+
+    /**
+     * 保存组织职位信息
+     *
+     * @param env 环境变量
+     * @param id  主键
+     * @return 信息
+     */
+    @PutMapping(value = "/{id:[0-9]+}/positions")
+    public Result<?> positionsSave(@PathVariable String env, @PathVariable Long id, @RequestBody List<Long> positionIds) {
+        return ResultUtils.wrapFail(() -> {
+            departmentService.savePositions(id, positionIds);
+            return true;
+        });
+    }
 }

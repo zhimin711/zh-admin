@@ -1,16 +1,15 @@
 package com.zh.cloud.admin.controller.upms;
 
 import com.ch.Constants;
-import com.ch.result.InvokerPage;
-import com.ch.result.PageResult;
 import com.ch.result.Result;
 import com.ch.result.ResultUtils;
-import com.ch.utils.CommonUtils;
-import com.zh.cloud.admin.model.upms.Position;
+import com.ch.utils.VueRecordUtils;
 import com.zh.cloud.admin.model.upms.Position;
 import com.zh.cloud.admin.service.upms.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 角色管理控制层
@@ -49,7 +48,7 @@ public class PositionController {
      * @param id  主键
      * @return 信息
      */
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id:[0-9]+}")
     public Result<?> detail(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> positionService.find(id));
     }
@@ -77,7 +76,7 @@ public class PositionController {
      * @param env    环境变量
      * @return 是否成功
      */
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{id:[0-9]+}")
     public Result<?> edit(@RequestBody Position record, @PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
             positionService.update(record);
@@ -91,11 +90,24 @@ public class PositionController {
      * @param env 环境变量
      * @return 是否成功
      */
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id:[0-9]+}")
     public Result<?> delete(@PathVariable String env, @PathVariable Long id) {
         return ResultUtils.wrapFail(() -> {
             positionService.delete(id);
             return "";
+        });
+    }
+    /**
+     * 获取所有职位
+     *
+     * @param env 环境变量
+     * @return 职位
+     */
+    @GetMapping(value = "/all/")
+    public Result<?> all(@PathVariable String env) {
+        return ResultUtils.wrapList(() -> {
+            List<Position> records = positionService.findAll();
+            return VueRecordUtils.jsonKeyLabelTreeByIdAndName(records);
         });
     }
 }

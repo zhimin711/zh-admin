@@ -10,6 +10,8 @@ import io.ebean.PagedList;
 import io.ebean.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * decs:
  *
@@ -45,6 +47,11 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public void delete(Long id) {
 //        Position.find.deleteById(id);
+    }
+
+    @Override
+    public List<Position> findAll() {
+        return Position.find.all();
     }
 
 

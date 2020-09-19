@@ -2,25 +2,27 @@ package com.zh.cloud.admin.service.upms.impl;
 
 import com.ch.Constants;
 import com.ch.NumS;
+import com.ch.StatusS;
 import com.ch.e.PubError;
 import com.ch.pojo.KeyValue;
 import com.ch.utils.CommonUtils;
 import com.ch.utils.ExceptionUtils;
 import com.ch.utils.SQLUtils;
 import com.ch.utils.StringExtUtils;
-import com.zh.cloud.admin.model.upms.Department;
+import com.zh.cloud.admin.model.upms.*;
 import com.zh.cloud.admin.service.upms.DepartmentService;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * desc:
  *
- * @author zhimi
+ * @author zhimin.ma
  * @date 2020/9/10 7:47
  */
 @Service
@@ -52,7 +54,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void delete(Long id) {
-
+        Department record = find(id);
+        if (CommonUtils.isEquals(record.getPid(), StatusS.BEGIN)) {
+            ExceptionUtils._throw(PubError.NOT_ALLOWED);
+        }
+        record.delete();
     }
 
     @Override
@@ -76,6 +82,36 @@ public class DepartmentServiceImpl implements DepartmentService {
         String key = StringExtUtils.linkStr(Constants.SEPARATOR_2, record.getParentId(), record.getId().toString());
         String name = StringExtUtils.linkStr(Constants.SEPARATOR_3, record.getParentName(), record.getName());
         return new KeyValue(key, name);
+    }
+
+    @Override
+    public List<Position> findPositions(Long id) {
+        return findDepartmentPositionList(id).parallelStream().map(DepartmentPosition::getPosition).collect(Collectors.toList());
+    }
+
+    private List<DepartmentPosition> findDepartmentPositionList(Long id) {
+        return DepartmentPosition.find.query().fetch("position").where().eq("departmentId", id).findList();
+    }
+
+    @Override
+    public void savePositions(Long id, List<Long> positionIds) {
+        List<DepartmentPosition> list = findDepartmentPositionList(id);
+        if (CommonUtils.isEmpty(positionIds)) {
+            list.forEach(DepartmentPosition::delete);
+            return;
+        }
+        Map<Long, DepartmentPosition> departmentPositionMap = list.parallelStream().collect(Collectors.toMap(DepartmentPosition::getPositionId, Function.identity()));
+
+        for (Long pid : positionIds) {
+            departmentPositionMap.remove(pid);
+            DepartmentPositionKey departmentPositionKey = new DepartmentPositionKey(id, pid);
+            DepartmentPosition ur = DepartmentPosition.find.byId(departmentPositionKey);
+            if (ur != null) {
+                continue;
+            }
+            new DepartmentPosition(id, pid).save();
+        }
+        if (!departmentPositionMap.isEmpty()) departmentPositionMap.forEach((k, v) -> v.delete());
     }
 
     private void findChildren(List<Department> list) {
