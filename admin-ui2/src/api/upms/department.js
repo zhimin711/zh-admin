@@ -31,3 +31,25 @@ export const editDepartment = info => {
     method: 'put'
   })
 }
+
+export const delDepartment = id => {
+  return axios.request({
+    url: `${namespace}/${id}`,
+    method: 'delete'
+  })
+}
+
+export const getDepartmentPositions = (id) => {
+  return axios.request({
+    url: `${namespace}/${id}/positions`,
+    method: 'get'
+  })
+}
+
+export const saveDepartmentPositions = (id, data) => {
+  return axios.request({
+    url: `${namespace}/${id}/positions`,
+    method: 'put',
+    data
+  })
+}

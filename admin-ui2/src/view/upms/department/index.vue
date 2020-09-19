@@ -55,13 +55,38 @@
         <Button @click="cancelRecord" style="margin-left: 8px" :disabled="loading">取消</Button>
       </div>
     </Modal>
+    <Modal v-model="positionModal" size="large">
+      <p slot="header">
+        请注意，您当前正在对 <span style="color:red; vertical-align: top;">{{record.label}}</span> 组织进行职位分配操作！
+      </p>
+      <!--:render-format="render3"-->
+      <Transfer
+        :data="positions"
+        :target-keys="positionValues"
+        :list-style="listStyle"
+        :titles="['可分配职位','已分配职位']"
+        :operations="['移除','分配']"
+        filterable
+        @on-change="positionChange">
+        <div :style="{float: 'right', margin: '5px'}">
+          <!--<Button size="small" @click="reloadRoles">{{ $t('refreshText') }}</Button>-->
+        </div>
+      </Transfer>
+      <div slot="footer">
+        <Button type="primary" @click="saveDepartmentPositions" :loading="loadingModal">提交</Button>
+        <Button @click="()=>{this.positionModal = false;this.positionValues = []}" style="margin-left: 8px"
+                :disabled="loadingModal">取消
+        </Button>
+      </div>
+    </Modal>
   </Card>
 </template>
 
 <script>
 import OrgView from './components/org-view.vue'
 import ZoomController from './components/zoom-controller.vue'
-import { getTreeDepartment, getDepartment, addDepartment, editDepartment } from '@/api/upms/department'
+import { getTreeDepartment, getDepartment, addDepartment, editDepartment, delDepartment, getDepartmentPositions, saveDepartmentPositions } from '@/api/upms/department'
+import { allPosition } from '@/api/upms/position'
 import './index.less'
 // const menuDic = {
 //   edit: '编辑部门',
@@ -86,9 +111,17 @@ export default {
   data () {
     return {
       loading: false,
+      loadingModal: false,
       data: null,
       zoom: 100,
       tableData: [],
+      positions: [],
+      positionValues: [],
+      positionModal: false,
+      listStyle: {
+        width: '200px',
+        height: '300px'
+      },
       recordModal: false,
       recordModalType: 'add',
       disabledProps: {
@@ -112,6 +145,46 @@ export default {
     }
   },
   methods: {
+    getPositions () {
+      this.positions = []
+      allPosition().then(resp => {
+        const { data } = resp
+        if (data && data.success) {
+          this.positions = data.rows
+        }
+      })
+    },
+    getDepartmentPositions () {
+      this.loadingModal = true
+      this.positionValues = []
+      getDepartmentPositions(this.record.id).then(resp => {
+        const { data } = resp
+        if (data && data.success) {
+          this.positionValues = data.rows.map(item => item.id)
+        }
+      }).finally(() => {
+        this.loadingModal = false
+      })
+    },
+    positionChange (targetKeys) {
+      this.positionValues = targetKeys
+    },
+    handlePosition (row) {
+      this.positionModal = true
+      this.record = Object.assign({}, row)
+      this.getDepartmentPositions()
+    },
+    saveDepartmentPositions () {
+      saveDepartmentPositions(this.record.id, this.positionValues).then(resp => {
+        const { data } = resp
+        if (data && data.success) {
+          this.positionModal = false
+          this.$Message.success(` [${this.record.label}] 分配职位成功！`)
+        } else {
+          this.$Message.error(` [${this.record.label}] 分配职位失败！`)
+        }
+      })
+    },
     setDepartmentData (data) {
       data.isRoot = true
       return data
@@ -119,6 +192,14 @@ export default {
     handleMenuClick ({ data, key }) {
       this.disabledProps.parent = data.isRoot || false
       if (key === 'delete') {
+        if (data.children && data.children.length > 0) {
+          this.$Message.warning('存在下级部门不允许删除，请先删除下级部门！')
+        } else {
+          this.handleDelete(data)
+        }
+        return
+      } else if (key === 'post') {
+        this.handlePosition(data)
         return
       }
       this.values.parent = []
@@ -193,6 +274,25 @@ export default {
     getDetail (id) {
       // getDepartment(id)
     },
+    handleDelete (row) {
+      this.$Modal.confirm({
+        title: '注意',
+        className: 'vertical-center-modal',
+        content: '<p>有下级部门不可删除</p><p>删除不可恢复，是否继续？</p>',
+        onOk: () => {
+          delDepartment(row.id).then(resp => {
+            const { data } = resp
+            if (data.success) {
+              this.$Message.success(`删除部门 [${row.label}] 成功！`)
+              this.getDepartmentData()
+              this.getParents()
+            }
+          })
+        },
+        onCancel: () => {
+        }
+      })
+    },
     parentFormat (label) {
       this.values.label = label
       return label.join('/')
@@ -213,9 +313,13 @@ export default {
   mounted () {
     this.getDepartmentData()
     this.getParents()
+    this.getPositions()
   }
 }
 </script>
 
-<style>
+<style lang="less">
+  .ivu-transfer-list-with-footer{
+    padding-bottom: 0;
+  }
 </style>

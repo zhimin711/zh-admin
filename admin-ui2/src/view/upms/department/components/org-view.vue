@@ -42,6 +42,11 @@ const menuList = [
     key: 'delete',
     code: 'upmsDepartmentDel',
     label: '删除部门'
+  },
+  {
+    key: 'post',
+    code: 'upmsDepartmentPost',
+    label: '分配职位'
   }
 ]
 const nonMenu = {
@@ -188,4 +193,7 @@ export default {
 </script>
 
 <style>
+  .context-menu{
+    z-index: 1000;
+  }
 </style>

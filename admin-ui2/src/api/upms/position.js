@@ -25,3 +25,10 @@ export const editPosition = info => {
     method: 'put'
   })
 }
+
+export const allPosition = () => {
+  return axios.request({
+    url: `${namespace}/all/ `,
+    method: 'get'
+  })
+}
