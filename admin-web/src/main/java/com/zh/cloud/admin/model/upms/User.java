@@ -73,7 +73,7 @@ public class User extends Model {
     private String locked;
 
     @ApiModelProperty(value = "过期日期")
-    private Date expired;
+    private LocalDate expired;
 
     @ApiModelProperty(value = "类型: 0.系统 1.普通")
     private String type;
@@ -107,6 +107,17 @@ public class User extends Model {
     @ApiModelProperty(value = "更新人")
     private String updateBy;
 
+    @ApiModelProperty(value = "部门ID（多个“,”拼接）")
+    private String departmentId;
+
+    @ApiModelProperty(value = "部门名称")
+    private String departmentName;
+
+    @ApiModelProperty(value = "职位Id")
+    private Long positionId;
+
+    @ApiModelProperty(value = "职位名称")
+    private String positionName;
 
     @Transient
     private Long roleId;
@@ -116,8 +127,5 @@ public class User extends Model {
 
     //    @Transient
 //    private String oldPassword;
-    @Transient
-    private String department;
-//    @Transient
-//    private List<DepartmentDuty> dutyList;
+
 }

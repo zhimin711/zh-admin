@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         if (userTmp == null) {
             throw new ServiceException();
         }
-        user.update("realName", "nn:password", "sex", "birth", "email", "mobile");
+        user.update("realName", "nn:password", "sex", "birth", "email", "mobile", "departmentId", "departmentName", "positionId", "positionName");
     }
 
     public InvokerPage.Page<User> findPage(User record, int pageNum, int pageSize) {
@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService {
 
     private Query<User> getBaseQuery(User record) {
         Query<User> query = User.find.query();
-        QueryUtils.eq(query, record);
-
+        QueryUtils.likeAny(query, record, "userId", "username", "realName");
+        QueryUtils.likeRight(query, record, "departmentId");
         return query;
     }
 
