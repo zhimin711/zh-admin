@@ -208,6 +208,7 @@ export default {
       })
     },
     saveRolePermissions () {
+      this.loadingModal = true
       let checkedNodes = this.$refs.permissionTree.ztreeObj.getCheckedNodes(true)
       const checkedIds = checkedNodes.map(item => item.id)
       saveRolePermissions(this.record.id, checkedIds).then(resp => {
@@ -218,7 +219,7 @@ export default {
         } else {
           this.$Message.error(` [${this.record.name}] 分配权限失败！`)
         }
-      })
+      }).finally(() => this.loadingModal = false)
     },
     filterPermissions (allRows, selectRows) {
       allRows.forEach(item => {
