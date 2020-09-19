@@ -198,14 +198,14 @@ export default {
     }
   },
   methods: {
-    covertDepartment(rows, pid) {
-      let tree= []
+    covertDepartment (rows, pid) {
+      let tree = []
       rows.forEach(item => {
-        let dept = {title: item.label, sid: item.value}
-        if(pid) {
+        let dept = { title: item.label, sid: item.value }
+        if (pid) {
           dept.sid = pid + ',' + item.value
         }
-        if(item.children && item.children.length > 0){
+        if (item.children && item.children.length > 0) {
           dept.expand = true
           dept.children = this.covertDepartment(item.children, dept.sid)
         }
@@ -217,10 +217,11 @@ export default {
       return h('span', {
         style: {
           display: 'inline-block',
+          cursor: 'pointer',
           width: '100%'
         },
-        on:{
-          click:()=>{
+        on: {
+          click: () => {
             this.searchDepartment(data)
           }
         }
@@ -236,9 +237,9 @@ export default {
           }),
           h('span', data.title)
         ])
-      ]);
+      ])
     },
-    searchDepartment(v){
+    searchDepartment (v) {
       this.pq.params.departmentId = v.sid
       this.getPageUser()
     },
