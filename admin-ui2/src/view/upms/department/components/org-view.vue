@@ -45,7 +45,7 @@ const menuList = [
   },
   {
     key: 'post',
-    code: 'upmsDepartmentPost',
+    code: 'upmsDepartmentPostSave',
     label: '分配职位'
   }
 ]

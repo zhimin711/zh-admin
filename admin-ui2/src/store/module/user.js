@@ -123,6 +123,18 @@ export default {
         // resolve()
       })
     },
+    // 退出登录
+    cleanLogin ({ state, commit }) {
+      return new Promise((resolve, reject) => {
+        commit('setToken', '')
+        commit('setAccess', [])
+        commit('setHasGetInfo', false)
+        commit('setPermissionList', [])
+        // localStorage.removeItem('tagNaveList')
+        resetRouter()
+        resolve()
+      })
+    },
     // 获取用户相关信息
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {

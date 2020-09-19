@@ -1,6 +1,8 @@
 import axios from 'axios'
 import store from '@/store'
-// import { Spin } from 'iview'
+import router from '@/router'
+import { Modal } from 'iview'
+
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -54,6 +56,9 @@ class HttpRequest {
     instance.interceptors.response.use(res => {
       this.destroy(url)
       const { data, status } = res
+      if (data.code && data.code === '307') {
+        openModal()
+      }
       return { data, status }
     }, error => {
       this.destroy(url)
@@ -76,5 +81,19 @@ class HttpRequest {
     this.interceptors(instance, options.url)
     return instance(options)
   }
+}
+function openModal () {
+  Modal.warning({
+    title: '登录过期',
+    content: '登录已失效,请重新登录',
+    okText: '重新登录',
+    onOk: () => {
+      store.dispatch('cleanLogin').then(() => {
+        router.push({
+          name: 'login'
+        })
+      })
+    }
+  })
 }
 export default HttpRequest

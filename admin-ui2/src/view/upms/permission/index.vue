@@ -20,7 +20,7 @@
       </Form>
       <Button style="margin: 5px 3px;" type="primary" icon="md-search" @click="handleSearch" :loading="loading">{{ $t('searchText') }}</Button>
       <Button style="margin: 5px 3px;" icon="md-refresh" @click="pq.params = {}">{{ $t('resetText') }}</Button>
-      <Button style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
+      <Button v-permission="['upmsPermissionAdd']" style="margin: 5px 3px;" type="primary" icon="md-add" @click="handleAdd">{{ $t('addText') }}</Button>
       <TreeTable
         ref="tables"
         expand-key="code"
@@ -35,9 +35,9 @@
       >
         <template slot="actions" slot-scope="{ row, index }">
           <ButtonGroup size="small">
-            <Button icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
-            <Button icon="ios-copy-outline" @click="handleEdit(row, index, 'copy')">复制</Button>
-            <Button icon="ios-close" @click="handleDelete(row,index)">删除</Button>
+            <Button v-permission="['upmsPermissionEdit']" icon="ios-create-outline" @click="handleEdit(row, index)">编辑</Button>
+            <Button v-permission="['upmsPermissionAdd']" icon="ios-copy-outline" @click="handleEdit(row, index, 'copy')">复制</Button>
+            <Button v-permission="['upmsPermissionDel']" icon="ios-close" @click="handleDelete(row,index)">删除</Button>
           </ButtonGroup>
         </template>
       </TreeTable>
@@ -50,14 +50,14 @@
           <span>&nbsp;权限</span>
         </p>
         <Form ref="recordForm" :model="record" :rules="recordRules" :label-width="80">
-          <FormItem label="类型" prop="type">
+          <FormItem label="类型">
             <RadioGroup v-model="record.type" type="button" @on-change="getParents">
               <Radio label="C">目录</Radio>
               <Radio label="M">菜单</Radio>
               <Radio label="B">按钮</Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label="上级" prop="parentId">
+          <FormItem label="上级">
             <Cascader :data="options.parent" v-model="values.parent" :render-format="parentFormat"></Cascader>
           </FormItem>
           <FormItem label="代码" prop="code" required>
@@ -66,22 +66,31 @@
           <FormItem label="名称" prop="name" required>
             <i-input type="text" v-model="record.name"></i-input>
           </FormItem>
-          <FormItem label="地址" prop="url">
+          <FormItem label="地址">
             <i-input type="text" v-model="record.url"></i-input>
           </FormItem>
-          <FormItem v-if="record.type !== 'B'" label="图标" prop="icon">
+          <FormItem v-if="record.type === 'B'" label="方法">
+            <RadioGroup v-model="record.method" type="button">
+              <Radio label="ALL">全部</Radio>
+              <Radio label="GET">GET</Radio>
+              <Radio label="POST">POST</Radio>
+              <Radio label="PUT">PUT</Radio>
+              <Radio label="DELETE">DELETE</Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem v-if="record.type !== 'B'" label="图标">
             <i-input type="text" v-model="record.icon"></i-input>
           </FormItem>
-          <FormItem label="序号" prop="sort">
+          <FormItem label="序号">
             <InputNumber :max="1000" :min="1" v-model="record.sort"></InputNumber>
           </FormItem>
-          <FormItem v-if="record.type === 'M'" label="隐藏" prop="status">
+          <FormItem v-if="record.type === 'M'" label="隐藏">
             <i-switch size="large" v-model="record.hidden">
               <span slot="open">是</span>
               <span slot="close">否</span>
             </i-switch>
           </FormItem>
-          <FormItem label="状态" prop="status">
+          <FormItem label="状态">
             <i-switch size="large" v-model="recordStatus">
               <span slot="open">开启</span>
               <span slot="close">关闭</span>
@@ -200,7 +209,10 @@ export default {
     },
     cancelRecord () {
       this.recordModal = false
-      this.$refs.recordForm.resetFields()
+      try {
+        this.$refs.recordForm.resetFields()
+      } finally {
+      }
     },
     async handleSubmit () {
       let resp
