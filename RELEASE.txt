@@ -1,4 +1,4 @@
-
+mvn clean package -P npm -Denv=release -Dmaven.test.skip
 
 release link : https://zhimin711.github.com/zh-admin/release.html
 

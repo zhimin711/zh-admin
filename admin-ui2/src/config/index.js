@@ -15,11 +15,12 @@ export default {
   useI18n: true,
   /**
    * @description api请求基础路径
+   * 可配置域名
    */
   baseUrl: {
     dev: '/mock',
     dev2: '/api/v1',
-    pro: 'https://produce.com'
+    pro: '/api/v1'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home
