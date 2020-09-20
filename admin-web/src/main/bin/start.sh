@@ -58,7 +58,7 @@ fi
 
 JAVA_OPTS="$JAVA_OPTS -XX:+UseG1GC -XX:MaxGCPauseMillis=250 -XX:+UseGCOverheadLimit -XX:+ExplicitGCInvokesConcurrent -XX:+PrintAdaptiveSizePolicy -XX:+PrintTenuringDistribution"
 JAVA_OPTS=" $JAVA_OPTS -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8"
-CANAL_OPTS="-DappName=canal-admin"
+ZH_OPTS="-DappName=zh-admin"
 
 for i in $base/lib/*;
     do CLASSPATH=$i:"$CLASSPATH";
@@ -70,7 +70,7 @@ echo "cd to $bin_abs_path for workaround relative path"
 cd $bin_abs_path
 
 echo CLASSPATH :$CLASSPATH
-$JAVA $JAVA_OPTS $JAVA_DEBUG_OPTS $JAVA_JMX_OPTS $CANAL_OPTS -classpath .:$CLASSPATH com.alibaba.otter.canal.admin.CanalAdminApplication 1>>/dev/null 2>&1 &
+$JAVA $JAVA_OPTS $JAVA_DEBUG_OPTS $JAVA_JMX_OPTS $ZH_OPTS -classpath .:$CLASSPATH com.zh.cloud.admin.ZHAdminApplication 1>>/dev/null 2>&1 &
 echo $! > $base/bin/admin.pid
 
 echo "cd to $current_path for continue"

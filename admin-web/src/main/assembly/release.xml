@@ -26,10 +26,10 @@
             <directory>./src/main/resources</directory>
             <outputDirectory>/conf</outputDirectory>
             <includes>
-                <include>application.yml</include>
-                <include>application-dev.yml</include>
-                <include>application-sit.yml</include>
-                <include>application-prod.yml</include>
+                <include>application.yaml</include>
+                <include>application-dev.yaml</include>
+                <include>application-sit.yaml</include>
+                <include>application-prod.yaml</include>
                 <include>logback.xml</include>
                 <include>public/**</include>
                 <include>upms.sql</include>

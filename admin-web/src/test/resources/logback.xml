@@ -6,7 +6,7 @@
 		</encoder>
 	</appender>
 
-	<appender name="CANAL-ROOT" class="ch.qos.logback.classic.sift.SiftingAppender">
+	<appender name="ZH-ROOT" class="ch.qos.logback.classic.sift.SiftingAppender">
         <discriminator>
             <Key>admin</Key>
             <DefaultValue>admin</DefaultValue>
@@ -35,12 +35,12 @@
 
 	<root level="debug">
 		<appender-ref ref="STDOUT"/>
-		<appender-ref ref="CANAL-ROOT" />
+		<appender-ref ref="ZH-ROOT" />
 	</root>
 
 	<logger name="io.ebean.SQL" additivity="false">
 		<level value="debug" />
 		<appender-ref ref="STDOUT"/>
-		<appender-ref ref="CANAL-ROOT" />
+		<appender-ref ref="ZH-ROOT" />
 	</logger>
 </configuration>

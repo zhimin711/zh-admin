@@ -184,15 +184,6 @@
                                     <outputDirectory>src/main/resources/public</outputDirectory>
                                     <overwrite>true</overwrite>
                                     <resources>
-                                        <!--<resource>
-                                            <directory>${project.parent.basedir}/admin-ui/target/dist</directory>
-                                            <includes>
-                                                <include>static/</include>
-                                                <include>index.html</include>
-                                                <include>avatar.gif</include>
-                                                <include>logo.png</include>
-                                            </includes>
-                                        </resource>-->
                                         <resource>
                                             <directory>${project.parent.basedir}/admin-ui2/dist</directory>
                                             <includes>
@@ -257,7 +248,7 @@
                             <descriptors>
                                 <descriptor>${basedir}/src/main/assembly/release.xml</descriptor>
                             </descriptors>
-                            <finalName>canal.admin-${project.version}</finalName>
+                            <finalName>zh.admin-${project.version}</finalName>
                             <outputDirectory>${project.basedir}/../target</outputDirectory>
                         </configuration>
                     </plugin>

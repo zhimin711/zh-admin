@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -156,6 +157,14 @@ public class WebConfig implements WebMvcConfigurer {
             out.print(JSON.toJSON(result));
         } catch (Throwable e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        if (!registry.hasMappingForPattern("/public/**")) {
+            registry.addResourceHandler("/public/**")
+                    .addResourceLocations("classpath:/public/");
         }
     }
 }
