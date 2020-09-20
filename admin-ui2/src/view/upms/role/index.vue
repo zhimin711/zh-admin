@@ -219,7 +219,9 @@ export default {
         } else {
           this.$Message.error(` [${this.record.name}] 分配权限失败！`)
         }
-      }).finally(() => this.loadingModal = false)
+      }).finally(() => {
+        this.loadingModal = false
+      })
     },
     filterPermissions (allRows, selectRows) {
       allRows.forEach(item => {
