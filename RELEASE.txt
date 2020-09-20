@@ -1,5 +1,5 @@
 
 
-release link : https://alibaba.github.com/canal/release.html
+release link : https://zhimin711.github.com/zh-admin/release.html
 
-download link : https://github.com/alibaba/canal/releases
+download link : https://github.com/zhimin711/zh-admin/releases

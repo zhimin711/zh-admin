@@ -45,7 +45,7 @@
             <dependency>
                 <groupId>com.ch</groupId>
                 <artifactId>ch-core</artifactId>
-                <version>1.0.3-SNAPSHOT</version>
+                <version>1.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>redis.clients</groupId>
