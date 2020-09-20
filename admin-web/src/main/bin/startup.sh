@@ -40,21 +40,14 @@ if [ -z "$JAVA" ]; then
   fi
 fi
 
-case "$#"
-in
-0 )
-  ;;
-2 )
-  if [ "$1" = "debug" ]; then
-    DEBUG_PORT=$2
-    DEBUG_SUSPEND="n"
-    JAVA_DEBUG_OPT="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=$DEBUG_PORT,server=y,suspend=$DEBUG_SUSPEND"
-  fi
-  ;;
-* )
-  echo "THE PARAMETERS MUST BE TWO OR LESS.PLEASE CHECK AGAIN."
-  exit;;
-esac
+JAVA_DEBUG_OPTS=""
+if [ "$1" = "debug" ]; then
+    JAVA_DEBUG_OPTS=" -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n "
+fi
+JAVA_JMX_OPTS=""
+if [ "$1" = "jmx" ]; then
+    JAVA_JMX_OPTS=" -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false "
+fi
 
 str=`file -L $JAVA | grep 64-bit`
 if [ -n "$str" ]; then
@@ -77,7 +70,7 @@ echo "cd to $bin_abs_path for workaround relative path"
 cd $bin_abs_path
 
 echo CLASSPATH :$CLASSPATH
-$JAVA $JAVA_OPTS $JAVA_DEBUG_OPT $ZH_OPTS -classpath .:$CLASSPATH com.zh.cloud.admin.ZHAdminApplication 1>>/dev/null 2>&1 &
+$JAVA $JAVA_OPTS $JAVA_DEBUG_OPTS $JAVA_JMX_OPTS $ZH_OPTS -classpath .:$CLASSPATH com.zh.cloud.admin.ZHAdminApplication 1>>/dev/null 2>&1 &
 echo $! > $base/bin/admin.pid
 
 echo "cd to $current_path for continue"

@@ -20,9 +20,16 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>com.ch</groupId>
             <artifactId>ch-core</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>com.ch</groupId>
+            <artifactId>ch-core-all</artifactId>
+            <version>1.0.4-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ch-core-all-1.0.4-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
