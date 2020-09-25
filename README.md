@@ -28,7 +28,7 @@
 |  组织管理  | 职位管理  |
 | ![组织管理](./images/department.png)  | ![职位管理](./images/Position.png) |
 |  权限管理  | 数据字典  |
-| ![权限管理](./images/login.png)  |  |
+| ![权限管理](./images/permission.png)  |  |
 
 ## 文档
 
