@@ -50,7 +50,7 @@ sh bin/start.sh
 
 ## 相关开源
 
-- [iview-admin](https://github.com/iview/iview-admin)
+- [朝华微服务框架](https://github.com/zhimin711/ch-cloud)
 
 ## 问题反馈
 - 报告 issue: [github issues](https://github.com/zhimin711/zh-admin/issues)
