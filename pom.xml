@@ -7,7 +7,6 @@
     <packaging>pom</packaging>
     <name>zhao hua admin module for 1.0.0-SNAPSHOT</name>
     <modules>
-<!--        <module>admin-ui</module>-->
         <module>admin-ui2</module>
         <module>admin-web</module>
     </modules>
