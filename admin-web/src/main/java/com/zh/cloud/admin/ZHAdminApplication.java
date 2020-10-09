@@ -17,7 +17,7 @@ public class ZHAdminApplication {
 
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(ZHAdminApplication.class);
-        application.setBannerMode(Banner.Mode.OFF);
+//        application.setBannerMode(Banner.Mode.OFF);
         application.run(args);
     }
 }
