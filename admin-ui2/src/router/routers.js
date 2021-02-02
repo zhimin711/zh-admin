@@ -114,6 +114,24 @@ const definedRoutes = {
       title: '职位管理'
     },
     component: () => import('@/view/upms/position/index.vue')
+  },
+  tools: {
+    path: '/tools',
+    name: 'tools',
+    meta: {
+      icon: 'ios-settings',
+      title: '系统工具'
+    },
+    component: Main
+  },
+  toolsGenerator: {
+    path: 'generator',
+    name: 'toolsGenerator',
+    meta: {
+      icon: 'md-pin',
+      title: '代码生成'
+    },
+    component: () => import('@/view/tools/generator/index.vue')
   }
 }
 

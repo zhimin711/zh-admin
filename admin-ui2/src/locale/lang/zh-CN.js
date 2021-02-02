@@ -62,6 +62,8 @@ export default {
   upmsPermission: '权限管理',
   upmsDepartment: '部门管理',
   upmsPosition: '职位管理',
+  tools: '系统工具',
+  toolsGenerator: '代码生成',
 
   user_model_title: '用户管理'
 }
