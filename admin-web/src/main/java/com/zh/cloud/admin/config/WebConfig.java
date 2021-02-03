@@ -81,6 +81,10 @@ public class WebConfig implements WebMvcConfigurer {
                                      Object o) {
                 String token = httpServletRequest.getHeader("X-Token");
                 if (CommonUtils.isEmpty(token)) {
+                    if (httpServletRequest.getRequestURI().endsWith("/download")) {
+//                        token = httpServletRequest.getParameter("token");
+                        return true;
+                    }
                     outError(httpServletResponse, Result.error(PubError.NOT_EXISTS, "Token 不存在！"));
                     return false;
                 }
@@ -91,9 +95,9 @@ public class WebConfig implements WebMvcConfigurer {
                 }
 //                        valid = true;
 //                        httpServletRequest.setAttribute("user", user);
-                boolean  valid = checkPermission(httpServletRequest, user);
+                boolean valid = checkPermission(httpServletRequest, user);
                 if (!valid) {
-                    outError(httpServletResponse, Result.error(PubError.NOT_AUTH,"角色未授权！"));
+                    outError(httpServletResponse, Result.error(PubError.NOT_AUTH, "角色未授权！"));
                     return false;
                 }
 
