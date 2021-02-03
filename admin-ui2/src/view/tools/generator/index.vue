@@ -128,10 +128,11 @@
           </Row>
         </Card>
         <Row :gutter="32" style="margin-top: 15px">
-          <FormItem>
+          <FormItem class="gen-btns">
             <Button v-if="current !== 0" type="warning" @click="next(-1)">Pre step</Button>
             <Button v-if="current !== 1" type="primary" @click="next(1)">Next step</Button>
             <Button v-if="current === 1" type="success" @click="submit">Generate</Button>
+            <Button @click="download()">测试下载</Button>
           </FormItem>
         </Row>
       </Form>
@@ -161,19 +162,9 @@ export default {
   name: 'tools_gen_page',
   data () {
     return {
-      current: 0,
+      current: 1,
       record: Object.assign({}, defaultObj),
-      formItem: {
-        input: '',
-        select: '',
-        radio: 'male',
-        checkbox: [],
-        switch: true,
-        date: '',
-        time: '',
-        slider: [20, 50],
-        textarea: ''
-      }
+      downloadPath: '\\2021-02-03\\myBatis3\\data3.zip'
     }
   },
   methods: {
@@ -186,9 +177,14 @@ export default {
     submit () {
       generateCode(this.record).then(resp => {
         if (resp && resp.data && resp.data.success) {
-          downloadZip({ filePath: resp.data.rows[0] })
+          this.download(resp.data.rows[0])
         }
       })
+    },
+    download (filePath) {
+      this.downloadPath = filePath || this.downloadPath
+      console.log(this.downloadPath)
+      downloadZip({ filePath: this.downloadPath })
     }
   }
 }
@@ -196,5 +192,8 @@ export default {
 <style>
   .code-step {
     margin: 10px;
+  }
+  .gen-btns .ivu-btn {
+    margin-right: 5px;
   }
 </style>
