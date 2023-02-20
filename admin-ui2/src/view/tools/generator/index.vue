@@ -144,7 +144,7 @@
 import { generateCode, downloadZip } from '@/api/tools/generator'
 const defaultObj = {
   dbType: 'MYSQL',
-  dbHost: 'canalmgr-m.dbsit.sfcloud.local',
+  dbHost: '',
   dbPort: 3306,
   dbName: 'ch_upms',
   dbUsername: 'zhimin',
