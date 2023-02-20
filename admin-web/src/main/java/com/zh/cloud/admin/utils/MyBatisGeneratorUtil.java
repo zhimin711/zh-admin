@@ -200,7 +200,6 @@ public class MyBatisGeneratorUtil {
 
         properties.put("driverClass", DatasourceUtils.getDriverClass(config.getDbType()));
 
-//        properties.put("connectionURL", "jdbc:mysql://canalmgr-m.dbsit.sfcloud.local:3306/ch_upms");
         properties.put("connectionURL", DatasourceUtils.getConnUrl(config.getDbType(), config.getDbHost(), config.getDbPort(), config.getDbName()));
 
         properties.put("userId", config.getDbUsername());
